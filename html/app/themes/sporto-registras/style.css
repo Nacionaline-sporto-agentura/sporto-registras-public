@@ -1,0 +1,136 @@
+/*
+	Theme Name: Lietuvos sporto registras
+	Theme URI: https://sportoregistras.ltu.lt
+	Description: Lietuvos sporto registras
+	Author: Petras Pauliūnas
+	Author URI: mailto:petras.pauliunas@gmail.com
+	Version: 1.1
+	Stable tag: 1.0
+	Requires at least: 6.4.2
+	Tested up to: 6.4.2
+	Requires PHP: 8.2
+	License: GNU General Public License v3 or later.
+	License URI: https://www.gnu.org/licenses/gpl-3.0.html
+	Text Domain: sr
+	Tags: flexible-header, custom-colors, custom-menu, custom-logo, featured-images, rtl-language-support, threaded-comments, translation-ready
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*,
+::after,
+::before {
+	box-sizing: border-box;
+}
+:root{
+	--sr-typography-text-font-family: 'Inter', sans-serif;
+	--sr-typography-text-font-weight: 400;
+	--sr-primary-color: #121926;
+	--sr-light-color:#F3F3F3; 
+	--sr-secondary-color:  #ADE6B9;
+	--sr-accent-color:  #003D2B;
+	--sr-menu-hover-color: #E3E8EF;
+	--sr-text-color: #000;
+}
+html{scroll-behavior: smooth;}
+body,html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+	font-size:16px;
+}
+body{
+	font-family: var(--sr-typography-text-font-family);
+}
+h1,h2,h3,h4,h5,h6{
+	font-family: var(--sr-typography-text-font-family);
+}
+h1{
+	font-size: 6.5rem;
+}
+h2{
+	font-size: 2rem;
+}
+h3 {
+	font-size: 1.5rem;
+}
+h4 {
+	font-size:1.2rem;
+}
+h5 {
+	font-size: 1.1rem;
+}
+h6{
+	font-size: 1rem;
+}
+a{
+	color:var(--sr-primary-color);
+}
+a:hover{
+	color:var(--sr-primary-color);
+}
+a.elementor-button{
+	background:var(--sr-accent-color);
+	border-radius: 999px;
+}
+.sr-menu a:hover{
+	background:var(--sr-menu-hover-color);
+	border-radius: 999px;
+}
+.sr-menu .current-menu-item a{
+	background:var(--sr-secondary-color);
+	border-radius: 999px;
+}
+.sr-tab{
+    background: url(assets/images/tab.svg);
+	width: 267px;
+	height:96px;
+	display:block;
+	background-size: contain;
+	display: flex;
+    justify-content: center;
+	align-items: center;
+}
+.sr-tab .sr-arrow{
+	width:32px;
+	height:32px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+}
+.sr-tab .sr-arrow:after{
+	content:'';
+	width:12px;
+	height:12px;
+	display:block;
+}
+.sr-tab .arrow-black{
+	background:var(--sr-light-color);
+}
+.sr-tab .arrow-green{
+	background:var(--sr-secondary-color);
+}
+.sr-tab .arrow-white{
+	background:var(--sr-accent-color);
+}
+.sr-tab .arrow-black:after{
+	background:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMiAxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTIgMTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiMxMjE5MjY7fQ0KPC9zdHlsZT4NCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMS45LDAuNmMtMC4xLTAuMi0wLjMtMC40LTAuNS0wLjVDMTEuMywwLDExLjEsMCwxMSwwSDFDMC40LDAsMCwwLjQsMCwxczAuNCwxLDEsMWg3LjZsLTguMyw4LjMNCgljLTAuNCwwLjQtMC40LDEsMCwxLjRDMC41LDExLjksMC43LDEyLDEsMTJzMC41LTAuMSwwLjctMC4zTDEwLDMuNFYxMWMwLDAuNiwwLjQsMSwxLDFzMS0wLjQsMS0xVjFDMTIsMC45LDEyLDAuNywxMS45LDAuNnoiLz4NCjwvc3ZnPg0K)
+}
+.sr-tab .arrow-green:after{
+	background:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMiAxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTIgMTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiMwMDNEMkI7fQ0KPC9zdHlsZT4NCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMS45LDAuNmMtMC4xLTAuMi0wLjMtMC40LTAuNS0wLjVDMTEuMywwLDExLjEsMCwxMSwwSDFDMC40LDAsMCwwLjQsMCwxczAuNCwxLDEsMWg3LjZsLTguMyw4LjMNCgljLTAuNCwwLjQtMC40LDEsMCwxLjRDMC41LDExLjksMC43LDEyLDEsMTJzMC41LTAuMSwwLjctMC4zTDEwLDMuNFYxMWMwLDAuNiwwLjQsMSwxLDFzMS0wLjQsMS0xVjFDMTIsMC45LDEyLDAuNywxMS45LDAuNnoiLz4NCjwvc3ZnPg0K)
+}
+.sr-tab .arrow-white:after{
+	background:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMiAxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTIgMTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNGRkZGRkY7fQ0KPC9zdHlsZT4NCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMS45LDAuNmMtMC4xLTAuMi0wLjMtMC40LTAuNS0wLjVDMTEuMywwLDExLjEsMCwxMSwwSDFDMC40LDAsMCwwLjQsMCwxczAuNCwxLDEsMWg3LjZsLTguMyw4LjMNCgljLTAuNCwwLjQtMC40LDEsMCwxLjRDMC41LDExLjksMC43LDEyLDEsMTJzMC41LTAuMSwwLjctMC4zTDEwLDMuNFYxMWMwLDAuNiwwLjQsMSwxLDFzMS0wLjQsMS0xVjFDMTIsMC45LDEyLDAuNywxMS45LDAuNnoiLz4NCjwvc3ZnPg0K)
+}
+.sr-tab .sr-link{
+	display: flex;
+    justify-content: space-between;
+    width: 70%;
+    margin-bottom: 30px;
+    align-items: center;
+    margin-left: 22px;
+}
+.sr-tab .sr-label{
+	margin-right:12px;
+}

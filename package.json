@@ -1,0 +1,9 @@
+{
+  "name": "sporto-registras-public",
+  "version": "1.0.0",
+  "scripts": {
+    "dc:up": "docker-compose -p sporto-registras-public up --build -d --force-recreate",
+    "dc:logs": "docker-compose -p sporto-registras-public logs -f",
+    "dc:down": "docker-compose -p sporto-registras-public down"
+  }
+}
