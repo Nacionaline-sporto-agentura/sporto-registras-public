@@ -26,6 +26,8 @@ services:
       - MINIO_ROOT_USER=${MINIO_ACCESSKEY}
       - MINIO_ROOT_PASSWORD=${MINIO_SECRETKEY}
     command: server --console-address ":9001" /data
+    volumes:
+      - minio-data:/data
     networks:
       - internal
 
@@ -77,4 +79,6 @@ networks:
 
 volumes:
   sporto-registras-mariadb:
+    driver: local
+  minio-data:
     driver: local

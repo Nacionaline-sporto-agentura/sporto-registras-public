@@ -37,7 +37,7 @@
     "oscarotero/env": "^2.1",
     "roots/bedrock-autoloader": "^1.0",
     "roots/bedrock-disallow-indexing": "^2.0",
-    "roots/wordpress": "6.4.2",
+    "roots/wordpress": "6.5.3",
     "roots/wp-config": "1.0.0",
     "roots/wp-password-bcrypt": "1.1.0",
     "wpackagist-plugin/wps-hide-login": "*",
@@ -50,7 +50,9 @@
     "wpackagist-plugin/query-monitor": "*",
     "wpackagist-plugin/svg-support": "*",
     "wpackagist-plugin/make-column-clickable-elementor": "*",
+    "wpackagist-plugin/enable-media-replace": "*",
     "stayallive/wp-sentry": "^6.26" 
+    
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.7.1",
