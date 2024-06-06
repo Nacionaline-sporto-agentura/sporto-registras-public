@@ -25,7 +25,6 @@ jobs:
           push: true
 
       - name: Trigger deploy
-        if: false
         uses: AplinkosMinisterija/reusable-workflows/.github/actions/trigger-workflow-and-wait@main
         with:
           application-id: ${{ secrets.SPORTO_REGISTRAS_TRIGGER_DEPLOY_APPLICATION_ID }}
