@@ -110,12 +110,26 @@ function sr_tab_shortcode($atts)
     $atts = shortcode_atts(
         array(
             'color' => 'black',
+            'key' => '',
             'count' => '2023',
             'href' => '#',
         ),
         $atts,
         'sr_tab'
     );
+
+    $url = SPORT_REGISTER_API_URL.'/sportsRegister/count';
+    $response = wp_remote_get($url);
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body);
+    if (!empty($data) && isset($data->{$atts['key']})) {
+        $atts['count'] = $data->{$atts['key']};
+        if ($atts['count'] > 1000) {
+            $atts['count'] = round($atts['count'] / 1000, 1) . ' tūkst.';
+        } else {
+            $atts['count'] = $atts['count'] . ' vnt.';
+        }
+    }
     return '<div class="sr-tab"><a href="' . $atts['href'] . '" class="sr-link"><span class="sr-label">' . $atts['count'] . '</span><span class="sr-arrow arrow-' . $atts['color'] . '"></span></a></div>';
 }
 add_shortcode('sr_tab', 'sr_tab_shortcode');
