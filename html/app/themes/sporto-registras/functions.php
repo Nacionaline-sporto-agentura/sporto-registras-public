@@ -69,7 +69,7 @@ function add_favicon_meta()
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo SR_THEME_URL;?>/assets/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="<?php echo SR_THEME_URL;?>/assets/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo SR_THEME_URL;?>/assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="<?php echo SR_THEME_URL;?>/assets/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="<?php echo SR_THEME_URL;?>/assets/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
@@ -111,7 +111,7 @@ function sr_tab_shortcode($atts)
         array(
             'color' => 'black',
             'key' => '',
-            'count' => '2023',
+            'count' => 0,
             'href' => '#',
         ),
         $atts,
@@ -133,6 +133,8 @@ function sr_tab_shortcode($atts)
     return '<div class="sr-tab"><a href="' . $atts['href'] . '" class="sr-link"><span class="sr-label">' . $atts['count'] . '</span><span class="sr-arrow arrow-' . $atts['color'] . '"></span></a></div>';
 }
 add_shortcode('sr_tab', 'sr_tab_shortcode');
+
+
 
 
 function is_dir_empty($dir)
@@ -157,4 +159,7 @@ function clear_elementor_cache()
 
 if (file_exists(get_template_directory() . '/inc/off_canvas/off_canvas.php')) {
     require_once 'inc/off_canvas/off_canvas.php';
+}
+if (file_exists(get_template_directory() . '/inc/sr_table/sr_table.php')) {
+    require_once 'inc/sr_table/sr_table.php';
 }
