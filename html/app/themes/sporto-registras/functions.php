@@ -140,12 +140,11 @@ add_shortcode('sr_tab', 'sr_tab_shortcode');
 function is_dir_empty($dir)
 {
     if (!is_readable($dir)) {
-        return null; // when the directory is unreadable
+        return null;
     }
     return (count(glob("$dir/*")) === 0);
 }
 
-// Automatically purge and regenerate the Elementor CSS cache
 add_action('init', 'clear_elementor_cache');
 function clear_elementor_cache()
 {

@@ -96,7 +96,8 @@
             this.createDataTable(this.$tables[sr_table_vars.TABLE_ID]);
         },
     };
-    $(function () {
+
+    document.addEventListener('DOMContentLoaded', () => {
         sr_table.init();
     });  
 
