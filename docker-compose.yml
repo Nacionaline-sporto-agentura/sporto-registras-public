@@ -65,7 +65,7 @@ services:
     links:
       - mariadb
     volumes:
-      - ./html/app/themes/sporto-registras:/opt/wordpress/html/app/themes/sporto-registras:rw
+      - ./html/wpapp/themes/sporto-registras:/opt/wordpress/html/wpapp/themes/sporto-registras:rw
     env_file: 
       - ./.env
     ports:

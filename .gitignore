@@ -1,9 +1,9 @@
 # Application
-html/app/plugins
-html/app/mu-plugins
-html/app/upgrade
-html/app/uploads
-html/app/cache/
+html/wpapp/plugins
+html/wpapp/mu-plugins
+html/wpapp/upgrade
+html/wpapp/uploads
+html/wpapp/cache/
 
 # WordPress
 html/wp
