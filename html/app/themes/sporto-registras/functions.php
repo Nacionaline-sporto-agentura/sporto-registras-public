@@ -103,28 +103,6 @@ function copyright_shortcode($atts)
 }
 add_shortcode('copyright', 'copyright_shortcode');
 
-function is_dir_empty($dir)
-{
-    if (!is_readable($dir)) {
-        return null;
-    }
-    return (count(glob("$dir/*")) === 0);
-}
-
-add_action('init', 'clear_elementor_cache');
-function clear_elementor_cache()
-{
-    if (is_dir_empty($_SERVER['DOCUMENT_ROOT'] . '/app/uploads/elementor/css')) {
-        if (! did_action('elementor/loaded')) {
-            return;
-        }
-        \Elementor\Plugin::$instance->files_manager->clear_cache();
-    }
-}
-
-if (file_exists(get_template_directory() . '/inc/off_canvas/off_canvas.php')) {
-    require_once 'inc/off_canvas/off_canvas.php';
-}
 if (file_exists(get_template_directory() . '/inc/sr_frontpage/sr_frontpage.php')) {
     require_once 'inc/sr_frontpage/sr_frontpage.php';
 }

@@ -2521,15 +2521,15 @@
         },
         {
             "name": "wpackagist-plugin/elementor",
-            "version": "3.21.8",
+            "version": "3.22.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/elementor/",
-                "reference": "tags/3.21.8"
+                "reference": "tags/3.22.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/elementor.3.21.8.zip"
+                "url": "https://downloads.wordpress.org/plugin/elementor.3.22.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -2725,12 +2725,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "2e530fa2b00d046ceb5660f3139af583170ea7f9"
+                "reference": "22f9af2d843383f1c25638b07d8cbcf18482527e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/2e530fa2b00d046ceb5660f3139af583170ea7f9",
-                "reference": "2e530fa2b00d046ceb5660f3139af583170ea7f9",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/22f9af2d843383f1c25638b07d8cbcf18482527e",
+                "reference": "22f9af2d843383f1c25638b07d8cbcf18482527e",
                 "shasum": ""
             },
             "conflict": {
@@ -2956,7 +2956,7 @@
                 "gos/web-socket-bundle": "<1.10.4|>=2,<2.6.1|>=3,<3.3",
                 "gree/jose": "<2.2.1",
                 "gregwar/rst": "<1.0.3",
-                "grumpydictator/firefly-iii": "<6.1.7",
+                "grumpydictator/firefly-iii": "<6.1.17",
                 "gugoan/economizzer": "<=0.9.0.0-beta1",
                 "guzzlehttp/guzzle": "<6.5.8|>=7,<7.4.5",
                 "guzzlehttp/psr7": "<1.9.1|>=2,<2.4.5",
@@ -3083,7 +3083,7 @@
                 "mojo42/jirafeau": "<4.4",
                 "mongodb/mongodb": ">=1,<1.9.2",
                 "monolog/monolog": ">=1.8,<1.12",
-                "moodle/moodle": "<4.3.4",
+                "moodle/moodle": "<4.3.5|>=4.4.0.0-beta,<4.4.1",
                 "mos/cimage": "<0.7.19",
                 "movim/moxl": ">=0.8,<=0.10",
                 "movingbytes/social-network": "<=1.2.1",
@@ -3276,7 +3276,7 @@
                 "slim/slim": "<2.6",
                 "slub/slub-events": "<3.0.3",
                 "smarty/smarty": "<4.5.3|>=5,<5.1.1",
-                "snipe/snipe-it": "<=6.2.2",
+                "snipe/snipe-it": "<6.4.2",
                 "socalnick/scn-social-auth": "<1.15.2",
                 "socialiteproviders/steam": "<1.1",
                 "spatie/browsershot": "<3.57.4",
@@ -3520,7 +3520,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-13T20:04:44+00:00"
+            "time": "2024-06-18T22:04:21+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
