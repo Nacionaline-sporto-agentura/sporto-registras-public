@@ -68,7 +68,7 @@ Config::define('SPORT_REGISTER_API_URL', env('SPORT_REGISTER_API_URL'));
 /**
  * Custom Content Directory
  */
-Config::define('CONTENT_DIR', '/app');
+Config::define('CONTENT_DIR', '/wpapp');
 Config::define('WP_CONTENT_DIR', $webroot_dir . Config::get('CONTENT_DIR'));
 Config::define('WP_CONTENT_URL', Config::get('WP_HOME') . Config::get('CONTENT_DIR'));
 Config::define('WP_TEMP_DIR', $webroot_dir . Config::get('CONTENT_DIR'));
@@ -151,9 +151,8 @@ header('Feature-Policy: geolocation=(), midi=(), sync-xhr=(), accelerometer=(), 
 header('Cross-Origin-Embedder-Policy: unsafe-none; report-to="default"');
 header('Cross-Origin-Resource-Policy: cross-origin');
 if(isset($_SERVER['HTTPS'])  && $_SERVER['HTTPS'] == 'on') {
-    header("Content-Security-Policy: default-src * data:; script-src https: 'unsafe-inline' 'unsafe-eval'; style-src https: 'unsafe-inline';");
+    header("Content-Security-Policy: default-src * https: blob: data:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; frame-src 'self' consentcdn.cookiebot.com consent.cookiebot.com dev.registras.ltusportas.lt *.userway.org userway.org blob:; worker-src 'self' blob:;");
 }
-header('Expect-CT:enforce, max-age=31536000, report-uri="https://your.report-uri.com/r/d/ct/enforce"');
 
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
 if ($origin == env('WP_HOME')) {
