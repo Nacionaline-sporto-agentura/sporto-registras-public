@@ -7,6 +7,7 @@
  * Author URI:   mailto:petras.pauliunas@gmail.com
  */
 
+define('AS3CF_BUCKET', MINIO_BUCKET);
 define('AS3CF_SETTINGS', serialize(array(
     'provider' => 'aws',
     'access-key-id' => MINIO_ACCESSKEY,
@@ -15,7 +16,7 @@ define('AS3CF_SETTINGS', serialize(array(
 
 function minio_s3_client_args($args)
 {
-    $args['endpoint'] = 'http://' . MINIO_ENDPOINT;
+    $args['endpoint'] = (MINIO_USESSL == 'true' ? 'https://' : 'http://').MINIO_ENDPOINT;
     $args['use_path_style_endpoint'] = true;
     return $args;
 }

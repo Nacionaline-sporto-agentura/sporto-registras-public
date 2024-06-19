@@ -69,7 +69,7 @@ function add_favicon_meta()
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo SR_THEME_URL;?>/assets/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="<?php echo SR_THEME_URL;?>/assets/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo SR_THEME_URL;?>/assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="<?php echo SR_THEME_URL;?>/assets/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="<?php echo SR_THEME_URL;?>/assets/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
@@ -103,44 +103,9 @@ function copyright_shortcode($atts)
 }
 add_shortcode('copyright', 'copyright_shortcode');
 
-
-function sr_tab_shortcode($atts)
-{
-    // Attributes
-    $atts = shortcode_atts(
-        array(
-            'color' => 'black',
-            'count' => '2023',
-            'href' => '#',
-        ),
-        $atts,
-        'sr_tab'
-    );
-    return '<div class="sr-tab"><a href="' . $atts['href'] . '" class="sr-link"><span class="sr-label">' . $atts['count'] . '</span><span class="sr-arrow arrow-' . $atts['color'] . '"></span></a></div>';
+if (file_exists(get_template_directory() . '/inc/sr_frontpage/sr_frontpage.php')) {
+    require_once 'inc/sr_frontpage/sr_frontpage.php';
 }
-add_shortcode('sr_tab', 'sr_tab_shortcode');
-
-
-function is_dir_empty($dir)
-{
-    if (!is_readable($dir)) {
-        return null; // when the directory is unreadable
-    }
-    return (count(glob("$dir/*")) === 0);
-}
-
-// Automatically purge and regenerate the Elementor CSS cache
-add_action('init', 'clear_elementor_cache');
-function clear_elementor_cache()
-{
-    if (is_dir_empty($_SERVER['DOCUMENT_ROOT'] . '/app/uploads/elementor/css')) {
-        if (! did_action('elementor/loaded')) {
-            return;
-        }
-        \Elementor\Plugin::$instance->files_manager->clear_cache();
-    }
-}
-
-if (file_exists(get_template_directory() . '/inc/off_canvas/off_canvas.php')) {
-    require_once 'inc/off_canvas/off_canvas.php';
+if (file_exists(get_template_directory() . '/inc/sr_table/sr_table.php')) {
+    require_once 'inc/sr_table/sr_table.php';
 }
