@@ -103,40 +103,6 @@ function copyright_shortcode($atts)
 }
 add_shortcode('copyright', 'copyright_shortcode');
 
-
-function sr_tab_shortcode($atts)
-{
-    // Attributes
-    $atts = shortcode_atts(
-        array(
-            'color' => 'black',
-            'key' => '',
-            'count' => 0,
-            'href' => '#',
-        ),
-        $atts,
-        'sr_tab'
-    );
-
-    $url = SPORT_REGISTER_API_URL.'/sportsRegister/count';
-    $response = wp_remote_get($url);
-    $body = wp_remote_retrieve_body($response);
-    $data = json_decode($body);
-    if (!empty($data) && isset($data->{$atts['key']})) {
-        $atts['count'] = $data->{$atts['key']};
-        if ($atts['count'] > 1000) {
-            $atts['count'] = round($atts['count'] / 1000, 1) . ' tūkst.';
-        } else {
-            $atts['count'] = $atts['count'] . ' vnt.';
-        }
-    }
-    return '<div class="sr-tab"><a href="' . $atts['href'] . '" class="sr-link"><span class="sr-label">' . $atts['count'] . '</span><span class="sr-arrow arrow-' . $atts['color'] . '"></span></a></div>';
-}
-add_shortcode('sr_tab', 'sr_tab_shortcode');
-
-
-
-
 function is_dir_empty($dir)
 {
     if (!is_readable($dir)) {
@@ -158,6 +124,9 @@ function clear_elementor_cache()
 
 if (file_exists(get_template_directory() . '/inc/off_canvas/off_canvas.php')) {
     require_once 'inc/off_canvas/off_canvas.php';
+}
+if (file_exists(get_template_directory() . '/inc/sr_frontpage/sr_frontpage.php')) {
+    require_once 'inc/sr_frontpage/sr_frontpage.php';
 }
 if (file_exists(get_template_directory() . '/inc/sr_table/sr_table.php')) {
     require_once 'inc/sr_table/sr_table.php';

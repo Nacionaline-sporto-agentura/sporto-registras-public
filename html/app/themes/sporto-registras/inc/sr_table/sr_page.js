@@ -183,10 +183,26 @@
             });
         }
     };
+    const sr_manager_map = {
+        init: function() {
+            const mapContainer = document.getElementById('sport-base__manager-map');
+            if(!mapContainer || !maplibregl) return;
+            const map = new maplibregl.Map({
+                container: 'sport-base__manager-map',
+                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                center: [23.8813, 55.1694],
+                zoom: 8
+            });
+            const marker = new maplibregl.Marker()
+                .setLngLat([23.8813, 55.1694])
+                .addTo(map);
+        }
+    }
     document.addEventListener('DOMContentLoaded', () => {
         sr_gallery.init();
         sr_tabs.init();
         sr_areas.init();
+        sr_manager_map.init();
     });
 
 }(jQuery, window, document));

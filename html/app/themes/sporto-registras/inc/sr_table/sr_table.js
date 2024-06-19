@@ -16,16 +16,64 @@
 
     var sr_table = {
         $table: null,
+        getSportTypes: function (publicSpaces) {
+            let types = '';
+            publicSpaces.forEach(function (public_space) {
+                public_space.sportTypes.forEach(function (sportType) {
+                    types += sportType.name + ', ';
+                });
+            });
+            return types.length > 0 ? types.slice(0, -2) : '-';
+        },
         $tables: {
             'sportsbases': {
                 url: sr_table_vars.REST_URL + 'sport-register/v1/sportbases',
-                columns : [{
-                        title: 'ID',
-                        data: 'id'
+                columns : [
+                    {
+                        title: 'Sporto bazės pavadinimas',
+                        data: 'name',
                     },
                     {
-                        title: 'Name',
-                        data: 'name'
+                        title: 'Rūšis',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return row.type.name ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Savivaldybė',
+                        data: 'address.municipality',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        title: 'Sporto šakos',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return sr_table.getSportTypes(row.publicSpaces);
+                        }
+                    },
+                    {
+                        title: 'Erdvių skaičius',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return Object.keys(row.publicSpaces).length;
+                        }
+                    },
+                    {
+                        title: 'Organizacija',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return 'Kas įvedė informaciją';
+                        }
                     },
                     {
                         title: 'Veiksmas',
@@ -33,6 +81,7 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
+                            console.log(row);
                             return '<a class="read-more" href="' + sr_table_vars.SPORT_BASE_URL + row.id + '/'+row.name.slugifyTitle()+'">' + sr_table_vars.I18N.READ_MORE + '</a>';
                         }
                     }

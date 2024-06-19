@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 class SR_Table
 {
@@ -22,6 +23,9 @@ class SR_Table
     public function enqueue_styles()
     {
         if (is_page($this->sport_base_page)) {
+            $maplibre_css_ver = $maplibre_js_ver = '4.3.2';
+            wp_enqueue_style('maplibre-styles', '//unpkg.com/maplibre-gl@'.$maplibre_js_ver.'/dist/maplibre-gl.css', [], $maplibre_js_ver, 'all');
+            wp_enqueue_script('maplibre-js', '//unpkg.com/maplibre-gl@'.$maplibre_css_ver.'/dist/maplibre-gl.js', ['jquery'], $maplibre_css_ver, true);
             $sr_page_js_ver  = date("ymd-His", filemtime(SR_THEME_DIR . '/inc/sr_table/sr_page.js'));
             $sr_page_css_ver  = date("ymd-His", filemtime(SR_THEME_DIR . '/inc/sr_table/sr_page.css'));
             wp_enqueue_style('sr-page-styles', SR_THEME_URL . '/inc/sr_table/sr_page.css', [], $sr_page_css_ver, 'all');
@@ -91,7 +95,7 @@ class SR_Table
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
             'sort' => ($order === 'desc' ? '' : '-') . $orderColumn,
-            //'fields' => 'id,huntingAreas,elderships,municipalities,dateTime,species,target',
+            'fields' => 'id,name',
             'populate' => '',
             'searchPublic' => $search
         );

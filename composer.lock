@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af81c75ffb96040f3c5ac096ebf1d07d",
+    "content-hash": "4e47e81ca7bce0b15cfd7394408bcc16",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -2575,15 +2575,15 @@
         },
         {
             "name": "wpackagist-plugin/header-footer-elementor",
-            "version": "1.6.35",
+            "version": "1.6.36",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/header-footer-elementor/",
-                "reference": "tags/1.6.35"
+                "reference": "tags/1.6.36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/header-footer-elementor.1.6.35.zip"
+                "url": "https://downloads.wordpress.org/plugin/header-footer-elementor.1.6.36.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -2646,6 +2646,24 @@
             "homepage": "https://wordpress.org/plugins/query-monitor/"
         },
         {
+            "name": "wpackagist-plugin/stop-user-enumeration",
+            "version": "1.6",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/stop-user-enumeration/",
+                "reference": "tags/1.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/stop-user-enumeration.1.6.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/stop-user-enumeration/"
+        },
+        {
             "name": "wpackagist-plugin/svg-support",
             "version": "2.5.5",
             "source": {
@@ -2683,15 +2701,15 @@
         },
         {
             "name": "wpackagist-plugin/wps-hide-login",
-            "version": "1.9.16",
+            "version": "1.9.16.3",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wps-hide-login/",
-                "reference": "tags/1.9.16"
+                "reference": "tags/1.9.16.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wps-hide-login.1.9.16.zip"
+                "url": "https://downloads.wordpress.org/plugin/wps-hide-login.1.9.16.3.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -2707,12 +2725,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "eaf1054e05e097721d376ba8779f55dd6247fcee"
+                "reference": "2e530fa2b00d046ceb5660f3139af583170ea7f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/eaf1054e05e097721d376ba8779f55dd6247fcee",
-                "reference": "eaf1054e05e097721d376ba8779f55dd6247fcee",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/2e530fa2b00d046ceb5660f3139af583170ea7f9",
+                "reference": "2e530fa2b00d046ceb5660f3139af583170ea7f9",
                 "shasum": ""
             },
             "conflict": {
@@ -2721,7 +2739,7 @@
                 "adodb/adodb-php": "<=5.20.20|>=5.21,<=5.21.3",
                 "aheinze/cockpit": "<2.2",
                 "aimeos/ai-client-html": ">=2020.04.1,<2020.10.27|>=2021.04.1,<2021.10.21|>=2022.04.1,<2022.10.12|>=2023.04.1,<2023.10.14|>=2024.04.1,<2024.04.4",
-                "aimeos/aimeos-core": ">=2022.04.1,<2022.10.17|>=2023.04.1,<2023.10.17|>=2024.04.1,<2024.04.7",
+                "aimeos/aimeos-core": "<2024.04.7",
                 "aimeos/aimeos-typo3": "<19.10.12|>=20,<20.10.5",
                 "airesvsg/acf-to-rest-api": "<=3.1",
                 "akaunting/akaunting": "<2.1.13",
@@ -2804,7 +2822,7 @@
                 "codeigniter4/framework": "<4.4.7",
                 "codeigniter4/shield": "<1.0.0.0-beta8",
                 "codiad/codiad": "<=2.8.4",
-                "composer/composer": "<1.10.27|>=2,<2.2.23|>=2.3,<2.7",
+                "composer/composer": "<1.10.27|>=2,<2.2.24|>=2.3,<2.7.7",
                 "concrete5/concrete5": "<9.2.8",
                 "concrete5/core": "<8.5.8|>=9,<9.1",
                 "contao-components/mediaelement": ">=2.14.2,<2.21.1",
@@ -2924,7 +2942,7 @@
                 "funadmin/funadmin": "<=3.2|>=3.3.2,<=3.3.3",
                 "gaoming13/wechat-php-sdk": "<=1.10.2",
                 "genix/cms": "<=1.1.11",
-                "getformwork/formwork": "<1.13",
+                "getformwork/formwork": "<1.13.1|==2.0.0.0-beta1",
                 "getgrav/grav": "<1.7.46",
                 "getkirby/cms": "<4.1.1",
                 "getkirby/kirby": "<=2.5.12",
@@ -3032,7 +3050,7 @@
                 "lms/routes": "<2.1.1",
                 "localizationteam/l10nmgr": "<7.4|>=8,<8.7|>=9,<9.2",
                 "luyadev/yii-helpers": "<1.2.1",
-                "magento/community-edition": "<2.4.3.0-patch3|>=2.4.4,<2.4.5",
+                "magento/community-edition": "<2.4.5|==2.4.5|>=2.4.5.0-patch1,<2.4.5.0-patch8|==2.4.6|>=2.4.6.0-patch1,<2.4.6.0-patch6|==2.4.7",
                 "magento/core": "<=1.9.4.5",
                 "magento/magento1ce": "<1.9.4.3-dev",
                 "magento/magento1ee": ">=1,<1.14.4.3-dev",
@@ -3400,7 +3418,7 @@
                 "winter/wn-dusk-plugin": "<2.1",
                 "winter/wn-system-module": "<1.2.4",
                 "wintercms/winter": "<=1.2.3",
-                "woocommerce/woocommerce": "<6.6",
+                "woocommerce/woocommerce": "<6.6|>=8.8,<8.8.5|>=8.9,<8.9.3",
                 "wp-cli/wp-cli": ">=0.12,<2.5",
                 "wp-graphql/wp-graphql": "<=1.14.5",
                 "wp-premium/gravityforms": "<2.4.21",
@@ -3443,7 +3461,7 @@
                 "zendframework/zend-ldap": ">=2,<2.0.99|>=2.1,<2.1.99|>=2.2,<2.2.8|>=2.3,<2.3.3",
                 "zendframework/zend-mail": "<2.4.11|>=2.5,<2.7.2",
                 "zendframework/zend-navigation": ">=2,<2.2.7|>=2.3,<2.3.1",
-                "zendframework/zend-session": ">=2,<2.0.99|>=2.1,<2.1.99|>=2.2,<2.2.9|>=2.3,<2.3.4",
+                "zendframework/zend-session": ">=2,<2.2.9|>=2.3,<2.3.4",
                 "zendframework/zend-validator": ">=2.3,<2.3.6",
                 "zendframework/zend-view": ">=2,<2.2.7|>=2.3,<2.3.1",
                 "zendframework/zend-xmlrpc": ">=2.1,<2.1.6|>=2.2,<2.2.6",
@@ -3502,7 +3520,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-06T22:04:19+00:00"
+            "time": "2024-06-13T20:04:44+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",

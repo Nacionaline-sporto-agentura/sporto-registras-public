@@ -1,0 +1,34 @@
+#sportsbases_info,
+#sportsbases_paginate,
+table#sportsbases thead th,
+table#sportsbases tfoot th,
+table#sportsbases,
+table#sportsbases tr,
+table#sportsbases th,
+table#sportsbases td,
+table#sportsbases.dataTable.no-footer,
+.sportsbases_wrapper .dataTables_wrapper .dataTables_paginate .paginate_button,
+.sportsbases_wrapper .dataTables_wrapper .dataTables_length,
+.sportsbases_wrapper .dataTables_wrapper .dataTables_filter,
+.sportsbases_wrapper .dataTables_wrapper .dataTables_info,
+.sportsbases_wrapper .dataTables_wrapper .dataTables_processing,
+.sportsbases_wrapper .dataTables_wrapper .dataTables_paginate .sportsbases_wrapper {
+    font-size: 14px;
+    font-weight: 400;
+    color: #4B5565;
+    border-bottom: 0;
+}
+table#sportsbases thead th,
+table#sportsbases th {
+    color:#121926;
+}
+#sportsbases{ width:100% !important;}
+#sportsbases_processing.dataTables_processing>div:last-child>div {
+    background: rgba(0, 61, 43, 0.9);
+}
+table#sportsbases tr.odd{
+    background-color: #f9f9f9;
+}
+table#sportsbases tr.even{
+    background-color: #fff;
+}

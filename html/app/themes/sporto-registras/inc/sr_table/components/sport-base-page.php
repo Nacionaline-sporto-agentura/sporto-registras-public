@@ -22,11 +22,12 @@ foreach($args['data']['photos'] as $photo) {
 }
 
 $type_fields = [];
-foreach($args['types_fields'] as $tf){
+foreach($args['types_fields'] as $tf) {
     $type_fields[$tf['id']] = $tf['field']['title'];
 }
 if(!function_exists('get_construction_date')) {
-    function get_construction_date($publicSpaces) {
+    function get_construction_date($publicSpaces)
+    {
         $constructionDates = [];
         foreach($publicSpaces as $publicSpace) {
             if(!empty($publicSpace['constructionDate'])) {
@@ -52,14 +53,23 @@ if(!function_exists('translate_places')) {
         }
     }
 }
-$construction_year = get_construction_date($args['data']['publicSpaces']);  
+$construction_year = get_construction_date($args['data']['publicSpaces']);
 $technicalConditionClass = [
-    1=>'sport-base__space__technicalCondition--excellent', //Puiki
-    2=>'sport-base__space__technicalCondition--good', //Gera
-    3=>'sport-base__space__technicalCondition--average', //Vidutinė
-    4=>'sport-base__space__technicalCondition--bad', //Bloga 
-    5=>'sport-base__space__technicalCondition--verybad', // Labai bloga
+    1 => 'sport-base__space__technicalCondition--excellent', //Puiki
+    2 => 'sport-base__space__technicalCondition--good', //Gera
+    3 => 'sport-base__space__technicalCondition--average', //Vidutinė
+    4 => 'sport-base__space__technicalCondition--bad', //Bloga
+    5 => 'sport-base__space__technicalCondition--verybad', // Labai bloga
 ];
+if(!function_exists('fix_url')) {
+    function fix_url($url)
+    {
+        if (!preg_match("/^https?:\/\//", $url)) {
+            $url = "https://" . $url;
+        }
+        return $url;
+    }
+}
 ?>
 
 <div class="sport-base__address"><span class="sport-base__address__icon"></span> <?php echo $address;?></div>
@@ -81,9 +91,9 @@ $technicalConditionClass = [
 <div class="sport-base__data">
     <div class="sport-base__tabs">
         <div class="sport-base__tabs-header">
-            <div class="sport-base__tab sport-base__tab--active" data-tab="overview"><?php _e('Apžvalga','sr');?></div>
-            <div class="sport-base__tab" data-tab="spaces"><?php _e('Erdvės','sr');?></div>
-            <div class="sport-base__tab" data-tab="organizations"><?php _e('Organizacijos','sr');?></div>
+            <div class="sport-base__tab sport-base__tab--active" data-tab="overview"><?php _e('Apžvalga', 'sr');?></div>
+            <?php if(!empty($args['data']['publicSpaces'])) {?><div class="sport-base__tab" data-tab="spaces"><?php _e('Erdvės', 'sr');?></div><?php } ?>
+            <?php if(!empty($args['data']['publicTenants'])) {?><div class="sport-base__tab" data-tab="organizations"><?php _e('Organizacijos', 'sr');?></div><?php } ?>
         </div>
         <div class="sport-base__tab-content" data-tab="overview">
             <ul class="sport-base__overview">
@@ -94,14 +104,14 @@ $technicalConditionClass = [
 <path d="M2 8.82C4.75011 6.36022 8.31034 5.00034 12 5.00034C15.6897 5.00034 19.2499 6.36022 22 8.82" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M12 20H12.01" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php _e('Viešas WiFi internetas','sr');?></span></li>
+</span> <span class="sport-base__label"><?php _e('Viešas WiFi internetas', 'sr');?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['parkingPlaces'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-parkingPlaces"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 17V7H13C13.7956 7 14.5587 7.31607 15.1213 7.87868C15.6839 8.44129 16 9.20435 16 10C16 10.7956 15.6839 11.5587 15.1213 12.1213C14.5587 12.6839 13.7956 13 13 13H9" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Automobilių stovėjimo aikštelė su %d %s','sr'), $args['data']['parkingPlaces'], translate_places($args['data']['parkingPlaces']));?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Automobilių stovėjimo aikštelė su %d %s', 'sr'), $args['data']['parkingPlaces'], translate_places($args['data']['parkingPlaces']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['dressingRooms'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-dressingRooms"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -115,7 +125,7 @@ $technicalConditionClass = [
 </clipPath>
 </defs>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Persirengimo patalpa su %d %s','sr'), $args['data']['dressingRooms'], translate_places($args['data']['dressingRooms']));?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Persirengimo patalpa su %d %s', 'sr'), $args['data']['dressingRooms'], translate_places($args['data']['dressingRooms']));?></span></li>
                 <?php } ?> 
                 <?php if(!empty($args['data']['methodicalClasses'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-methodicalClasses"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +133,7 @@ $technicalConditionClass = [
 <path d="M21 3V14C21 14.5304 20.7893 15.0391 20.4142 15.4142C20.0391 15.7893 19.5304 16 19 16H5C4.46957 16 3.96086 15.7893 3.58579 15.4142C3.21071 15.0391 3 14.5304 3 14V3" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M7 21L12 16L17 21" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Metodinės klasės su %d %s','sr'), $args['data']['methodicalClasses'], translate_places($args['data']['methodicalClasses']));?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Metodinės klasės su %d %s', 'sr'), $args['data']['methodicalClasses'], translate_places($args['data']['methodicalClasses']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['saunas'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-saunas"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -142,7 +152,7 @@ $technicalConditionClass = [
 </clipPath>
 </defs>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpa su %d %s','sr'), $args['data']['saunas'], translate_places($args['data']['saunas']));?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpa su %d %s', 'sr'), $args['data']['saunas'], translate_places($args['data']['saunas']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['diningPlaces'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-diningPlaces"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -157,7 +167,7 @@ $technicalConditionClass = [
 </clipPath>
 </defs>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Maitinimo vieta su %d %s','sr'), $args['data']['diningPlaces'], translate_places($args['data']['diningPlaces']));?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Maitinimo vieta su %d %s', 'sr'), $args['data']['diningPlaces'], translate_places($args['data']['diningPlaces']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['accommodationPlaces'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-accommodationPlaces"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -166,7 +176,7 @@ $technicalConditionClass = [
 <path d="M22 21V19C21.9993 18.1137 21.7044 17.2528 21.1614 16.5523C20.6184 15.8519 19.8581 15.3516 19 15.13" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Apgyvendinimas su %d %s','sr'), $args['data']['accommodationPlaces'], translate_places($args['data']['accommodationPlaces']));?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Apgyvendinimas su %d %s', 'sr'), $args['data']['accommodationPlaces'], translate_places($args['data']['accommodationPlaces']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['disabledAccessible'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-disabledAccessible"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -176,7 +186,7 @@ $technicalConditionClass = [
 <path d="M4.23989 14.5C3.95773 15.4231 3.94878 16.4081 4.21411 17.3361C4.47944 18.2641 5.00772 19.0955 5.73517 19.73C6.46262 20.3644 7.35815 20.7746 8.31365 20.9113C9.26916 21.0479 10.2438 20.9051 11.1199 20.5" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M13.7599 17.5C14.042 16.5769 14.051 15.5919 13.7857 14.6639C13.5203 13.7359 12.9921 12.9045 12.2646 12.2701C11.5372 11.6356 10.6416 11.2254 9.68612 11.0887C8.73062 10.9521 7.75599 11.0949 6.87988 11.5" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php _e('Pritaikyta žmonėms su judėjimo negalia','sr');?></span></li>
+</span> <span class="sport-base__label"><?php _e('Pritaikyta žmonėms su judėjimo negalia', 'sr');?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['blindAccessible'])) { ?>
                     <li><span class="sport-base__ico sport-base__ico-blindAccessible"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,7 +196,7 @@ $technicalConditionClass = [
 <path d="M2.5 13L5 7C5.7 5.7 6.4 5 8 5" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M21.5 13L19 7C18.3 5.7 17.5 5 16 5" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php _e('Pritaikyta žmonėms su regėjimo negalia','sr');?></span></li>
+</span> <span class="sport-base__label"><?php _e('Pritaikyta žmonėms su regėjimo negalia', 'sr');?></span></li>
                 <?php } ?>
                 <?php if(!empty($construction_year)) { ?>
                     <li><span class="sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -195,11 +205,12 @@ $technicalConditionClass = [
 <path d="M4 15V12C4 10.4087 4.63214 8.88258 5.75736 7.75736C6.88258 6.63214 8.4087 6 10 6" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M14 6C15.5913 6 17.1174 6.63214 18.2426 7.75736C19.3679 8.88258 20 10.4087 20 12V15" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Pastatyta %d m.','sr'), $construction_year); ?></span></li>
+</span> <span class="sport-base__label"><?php echo sprintf(__('Pastatyta %d m.', 'sr'), $construction_year); ?></span></li>
                 <?php } ?>
             </ul>
         </div>
         <div class="sport-base__tab-content" data-tab="spaces">
+            <?php if(!empty($args['data']['publicSpaces'])) {?>
             <?php foreach($args['data']['publicSpaces'] as $publicSpace) { ?>
                 <div class="sport-base__space">
                     <div class="sport-base__space__heading">
@@ -216,7 +227,7 @@ $technicalConditionClass = [
                         </ul>
                         <?php } ?>
                         
-                        <div class="sport-base__space__more"><span class="expand-text"><?php _e('Detaliau','sr');?></span><span class="collapse-text"><?php _e('Suskleisti','sr');?></span> <span class="btn-more sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <div class="sport-base__space__more"><span class="expand-text"><?php _e('Detaliau', 'sr');?></span><span class="collapse-text"><?php _e('Suskleisti', 'sr');?></span> <span class="btn-more sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7 7H17V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M7 17L17 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -226,20 +237,28 @@ $technicalConditionClass = [
                     <div class="sport-base__space_additionalValues_wrapper">
                         <?php if(!empty($publicSpace['additionalValues'])) { ?>
                             <ul class="sport-base__space__additionalValues">
-                                <?php foreach($publicSpace['additionalValues'] as $key=>$value) { ?>
+                                <?php foreach($publicSpace['additionalValues'] as $key => $value) { ?>
                                     <li><span class="sport-base__space__additional-label"><?php echo $type_fields[$key];?></span><span class="sport-base__space__additional-value"><?php echo $value;?></span></li>
                                 <?php } ?>  
                         <?php } ?>
                     </div>
                 </div>
             <?php } ?>
+            <?php } ?>
         </div>
+        <?php if(!empty($args['data']['publicTenants'])) {?>
         <div class="sport-base__tab-content" data-tab="organizations">
-            Organizacijos content
+            <?php foreach($args['data']['publicTenants'] as $publicTenant) { ?>
+                <div class="sport-base__space">
+                    <h3 class="sport-base__space-title"><?php echo $publicTenant['companyName'];?></h3>
+                    <div class="sport-base__space__type"><?php echo $publicTenant['companyCode'];?></div>
+                </div>
+            <?php } ?>
         </div>
+        <?php } ?>
     </div>
-    <div class="sport-base__manger">
     <?php if(!empty($args['data']['publicTenants'])) { ?>
+    <div class="sport-base__manger">
         <?php foreach($args['data']['publicTenants'] as $publicTenant) { ?>
         <div class="sport-base__manger-title"><?php echo $publicTenant['companyName'];?></div>
         <div class="sport-base__manger-contacts"> 
@@ -253,13 +272,18 @@ $technicalConditionClass = [
 </svg>
 </span> <?php echo $publicTenant['companyName'];?></div>
         </div>
-        <a href="/#/" class="sport-base__manager-www">Aplankykite adresas.lt <span class="sport-base__ico sport-base__ico-external"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <?php if(!empty($args['data']['webPage'])) {?>
+        <a href="<?php echo fix_url($args['data']['webPage']);?>" target="_blank" rel="nofollow" class="sport-base__manager-www"><?php _e('Aplankykite interneto svetainę', 'sr');?><span class="sport-base__ico sport-base__ico-external"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7 7H17V17" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M7 17L17 7" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
 </span></a>
-        <div class="sport-base__manager-map-wrapper"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1621.7490555804068!2d23.855598495169126!3d54.91170709199823!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46e721ef97a7cb31%3A0x52b4adde69626fea!2sVer%C5%A1v%C5%B3%20gimnazijos%20stadionas!5e0!3m2!1slt!2slt!4v1718270084530!5m2!1slt!2slt" class="sport-base__manager-map" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
         <?php } ?>
-    <?php } ?>
+        <div class="sport-base__manager-map-wrapper"><div id="sport-base__manager-map" class="sport-base__manager-map"></div></div>
+        <?php } ?>
+    
     </div>
+    <?php } ?>
 </div>
+
+<?php //print_r($args['data']);?>
