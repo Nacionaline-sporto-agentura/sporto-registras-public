@@ -27,14 +27,14 @@ WORKDIR /opt/wordpress/html
 COPY --chown=www-data:www-data html/. .htaccess ./
 
 # Copy custom folder content to app
-COPY --chown=www-data:www-data ./custom/. ./app/
+COPY --chown=www-data:www-data ./custom/. ./wpapp/
 
 # Set permissions and ownership
-RUN chmod -R 755 /opt/wordpress/html/app/ \
-    && mkdir -m 755 -p /opt/wordpress/html/app/uploads/elementor/css \
-    && chown -R www-data:www-data /opt/wordpress/html/app/uploads/elementor/css \
-    && chmod -R 755 /opt/wordpress/html/app/uploads \
-    && find /opt/wordpress/html/app/uploads -type f -exec chmod 644 {} \; \
-    && chown -R www-data:www-data /opt/wordpress/html/app/uploads
+RUN chmod -R 755 /opt/wordpress/html/wpapp/ \
+    && mkdir -m 755 -p /opt/wordpress/html/wpapp/uploads/elementor/css \
+    && chown -R www-data:www-data /opt/wordpress/html/wpapp/uploads/elementor/css \
+    && chmod -R 755 /opt/wordpress/html/wpapp/uploads \
+    && find /opt/wordpress/html/wpapp/uploads -type f -exec chmod 644 {} \; \
+    && chown -R www-data:www-data /opt/wordpress/html/wpapp/uploads
 
 EXPOSE 80
