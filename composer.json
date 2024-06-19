@@ -75,9 +75,9 @@
   "prefer-stable": true,
   "extra": {
     "installer-paths": {
-      "html/app/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
-      "html/app/plugins/{$name}/": ["type:wordpress-plugin"],
-      "html/app/themes/{$name}/": ["type:wordpress-theme"]
+      "html/wpapp/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+      "html/wpapp/plugins/{$name}/": ["type:wordpress-plugin"],
+      "html/wpapp/themes/{$name}/": ["type:wordpress-theme"]
     },
     "wordpress-install-dir": "html/wp"
   },
