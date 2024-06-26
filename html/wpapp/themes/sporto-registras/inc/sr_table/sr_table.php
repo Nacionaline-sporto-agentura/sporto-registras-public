@@ -1,12 +1,15 @@
 <?php
+
 defined('ABSPATH') || exit;
 
 class SR_Table
 {
     private $sport_base_page;
+    private $organization_page;
     public function __construct()
     {
         $this->sport_base_page = 358;
+        $this->organization_page = 634;
         add_filter('query_vars', array($this, 'query_vars'));
         add_filter('the_content', array($this, 'filter_the_content'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
@@ -22,7 +25,7 @@ class SR_Table
     }
     public function enqueue_styles()
     {
-        if (is_page($this->sport_base_page)) {
+        if (is_page($this->sport_base_page) || is_page($this->organization_page)) {
             $maplibre_css_ver = $maplibre_js_ver = '4.3.2';
             wp_enqueue_style('maplibre-styles', '//unpkg.com/maplibre-gl@'.$maplibre_js_ver.'/dist/maplibre-gl.css', [], $maplibre_js_ver, 'all');
             wp_enqueue_script('maplibre-js', '//unpkg.com/maplibre-gl@'.$maplibre_css_ver.'/dist/maplibre-gl.js', ['jquery'], $maplibre_css_ver, true);
@@ -35,6 +38,7 @@ class SR_Table
     public function register_rewrite_rule()
     {
         add_rewrite_rule('^sporto-bazes/([^/]+)/([^/]+)/?$', 'index.php?page_id=' . $this->sport_base_page . '&sr_id=$matches[1]&sr_name=$matches[2]', 'top');
+        add_rewrite_rule('^sporto-organizacijos/([^/]+)/([^/]+)/?$', 'index.php?page_id=' . $this->organization_page . '&sr_id=$matches[1]&sr_name=$matches[2]', 'top');
     }
     public function show_404()
     {
@@ -57,8 +61,28 @@ class SR_Table
                 $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
                 $out = $this->show_404();
             }
+        }elseif(is_page($this->organization_page) && $sr_id > 0) {
+            $sr = $this->_request('/organizations/' . $sr_id);
+
+            
+            $types_fields = $this->_request('/typesAndFields/');
+
+            if($sr instanceof WP_REST_Response && isset($sr->data['id'])) {
+                
+                $page_content = $this->load_component('inc/sr_table/components/organization-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
+
+                $content = str_replace('[organization-title]', $sr->data['name'], $content);
+                $content = str_replace('[content]', $page_content, $content);
+            } else {
+                $content = str_replace('[organization-title]', __('Sporto organizacija nerasta', 'sr'), $content);
+                $out = $this->show_404();
+            }
         } else {
-            $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
+            if(is_page($this->sport_base_page)){
+                $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
+            }elseif(is_page($this->organization_page)){
+                $content = str_replace('[organization-title]', __('Sporto organizacija nerasta', 'sr'), $content);
+            }
             $out = $this->show_404();
         }
 
@@ -78,6 +102,12 @@ class SR_Table
         register_rest_route('sport-register/v1', '/sportbases', array(
             'methods' => 'GET',
             'callback' => array($this, 'sport_bases_list'),
+            'permission_callback' => '__return_true',
+        ));
+
+        register_rest_route('sport-register/v1', '/organizations', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'organizations_list'),
             'permission_callback' => '__return_true',
         ));
     }
@@ -103,6 +133,37 @@ class SR_Table
         $query = !empty($query) ? '?' . $query : '';
 
         $sr = $this->_request('/sportsbases' . $query);
+
+        $data = (object) [];
+        $data->recordsTotal = $sr->data['total'] ?? 0;
+        $data->recordsFiltered = $sr->data['total'] ?? 0;
+        $data->data = $sr->data['rows'];
+        $data->draw = isset($params['draw']) ? intval($params['draw']) : 0;
+        return new WP_REST_Response($data, 200);
+    }
+
+    public function organizations_list(WP_REST_Request $request)
+    {
+        $params = $request->get_query_params();
+        $start = $params['start'] ?? 0;
+        $length = $params['length'] ?? 10;
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
+        $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
+
+        
+        $api_params = array(
+            'page' => ($start / $length) + 1,
+            'pageSize' => $length,
+            //'sort' => ($order === 'desc' ? '' : '-') . $orderColumn,
+            // 'fields' => 'id,name',
+            // 'populate' => '',
+            // 'searchPublic' => $search
+        );
+        $query = http_build_query($api_params);
+        $query = !empty($query) ? '?' . $query : '';
+
+        $sr = $this->_request('/organizations' . $query);
 
         $data = (object) [];
         $data->recordsTotal = $sr->data['total'] ?? 0;

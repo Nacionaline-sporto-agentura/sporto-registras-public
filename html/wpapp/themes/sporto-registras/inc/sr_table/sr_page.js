@@ -36,6 +36,12 @@
         init: function () {
             let that = this;
             this.track = document.querySelector('.sport-base__photos');
+
+            if (this.track == null || this.track.length === 0 ) {
+                console.warn('Sporto bazės galerijos elementų nerasta.');
+                return;
+            }
+
             this.slides = Array.from(this.track.children);
             this.nextButton = document.querySelector('.sport-base__photos_navigation__next');
             this.prevButton = document.querySelector('.sport-base__photos_navigation__prev');
