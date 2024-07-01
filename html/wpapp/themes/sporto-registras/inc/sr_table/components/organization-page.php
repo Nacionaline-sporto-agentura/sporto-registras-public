@@ -54,7 +54,7 @@ $sportTypes = ['Alpinizmas','Badmintonas','Boksas','Buriavimas'];
 
 for($i=0; $i<=5; $i++){
     $sport_bases[] = [
-        'id'=>$id,
+        'id'=>$i,
         'name' => 'Sporto bazės pavadinimas '.$i,
         'address' => 'Sporto bazės adresas '.$i,
         'sport_types' => array_chunk(['Alpinizmas','Badmintonas','Boksas','Buriavimas'],rand(1,4))[0],
