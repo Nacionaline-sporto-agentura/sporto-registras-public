@@ -74,11 +74,9 @@ a.elementor-button{
 	border-radius: 999px;
 }
 .sr-menu a:hover{
-	background:var(--sr-menu-hover-color);
 	border-radius: 999px;
 }
 .sr-menu .current-menu-item a{
-	background:var(--sr-secondary-color);
 	border-radius: 999px;
 }
 

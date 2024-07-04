@@ -32,10 +32,12 @@
                     {
                         title: 'Sporto bazės pavadinimas',
                         data: 'name',
+                        name: 'name',
                     },
                     {
                         title: 'Rūšis',
                         data: null,
+                        name: 'type.name',
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
@@ -45,12 +47,14 @@
                     {
                         title: 'Savivaldybė',
                         data: 'address.municipality',
+                        name: 'address.municipality',
                         orderable: false,
                         searchable: false
                     },
                     {
                         title: 'Sporto šakos',
                         data: null,
+                        name: 'sportTypes',
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
@@ -82,18 +86,72 @@
                         searchable: false,
                         render: function (data, type, row) {
                             console.log(row);
-                            return '<a class="read-more" href="' + sr_table_vars.SPORT_BASE_URL + row.id + '/'+row.name.slugifyTitle()+'">' + sr_table_vars.I18N.READ_MORE + '</a>';
+                            return '<a class="read-more" href="' + sr_table_vars.SPORT_BASE_URL + row.id + (row.name != null ? '/'+row.name.slugifyTitle(): '')+'">' + sr_table_vars.I18N.READ_MORE + '</a>';
                         }
                     }
-                    ],
-                    columnDefs: [
-                        // {
-                        //     targets: 1,
-                        //     render: function (data, type, row) {
-                        //         return '<a href="' + row.webPage + '">' + data + '</a>';
-                        //     }
-                        // }
-                    ]
+                ],
+                columnDefs: [
+                    // {
+                    //     targets: 1,
+                    //     render: function (data, type, row) {
+                    //         return '<a href="' + row.webPage + '">' + data + '</a>';
+                    //     }
+                    // }
+                ]
+            },
+            'organizations': {
+                url: sr_table_vars.REST_URL + 'sport-register/v1/organizations',
+                columns : [
+                    {
+                        title: 'Sporto organizacijos pavadinimas',
+                        name: 'name',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.name ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Tipas',
+                        data: null,
+                        name: 'type',
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return row.type !=null ? row.type.name : '-';
+                        }
+                    },
+                    {
+                        title: 'Adresas',
+                        data: null,
+                        name: 'address',
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return 'API nėra';
+                        }
+                    },
+                    {
+                        title: 'Veiksmas',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            if (row.name == null){
+                                return '-';
+                            }else{
+                                return '<a class="read-more" href="' + sr_table_vars.SPORT_BASE_URL + row.id + (row.name != null ? '/'+row.name.slugifyTitle(): '')+'">' + sr_table_vars.I18N.READ_MORE + '</a>';
+                            }
+                        }
+                    }
+                ],
+                columnDefs: [
+                    // {
+                    //     targets: 1,
+                    //     render: function (data, type, row) {
+                    //         return '<a href="' + row.webPage + '">' + data + '</a>';
+                    //     }
+                    // }
+                ]
             }
         },
         sanitize_title: function (title) {

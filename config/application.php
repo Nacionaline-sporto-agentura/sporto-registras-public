@@ -151,7 +151,7 @@ header('Feature-Policy: geolocation=(), midi=(), sync-xhr=(), accelerometer=(), 
 header('Cross-Origin-Embedder-Policy: unsafe-none; report-to="default"');
 header('Cross-Origin-Resource-Policy: cross-origin');
 if(isset($_SERVER['HTTPS'])  && $_SERVER['HTTPS'] == 'on') {
-    header("Content-Security-Policy: default-src * https: blob: data:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; frame-src 'self' consentcdn.cookiebot.com consent.cookiebot.com dev.registras.ltusportas.lt *.userway.org userway.org blob:; worker-src 'self' blob:;");
+    header("Content-Security-Policy: default-src * https: blob: data:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; frame-src 'self' consentcdn.cookiebot.com consent.cookiebot.com dev.registras.ltusportas.lt maps.google.com *.userway.org userway.org blob:; worker-src 'self' blob:;");
 }
 
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
