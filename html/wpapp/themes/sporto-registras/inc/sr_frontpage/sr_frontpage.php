@@ -41,13 +41,13 @@ class SR_Frontpage
 
     public function sr_map_shortcode($atts)
     {
-        // Attributes
         $atts = shortcode_atts(
             array(
-                'color' => 'black',
-                'key' => '',
-                'count' => 0,
-                'href' => '#',
+                'coordinates' => '23.7486, 55.0904',  // Lietuvos geografinė centro vieta
+                'zoom' => '7',
+                'pin' => SR_THEME_URL . '/assets/images/pin3.svg',
+                'pin_size' => '26,38',
+                'map_height' => '800px'
             ),
             $atts,
             'sr_map'
@@ -61,7 +61,17 @@ class SR_Frontpage
         wp_enqueue_style('sr-frontpage-styles', SR_THEME_URL . '/inc/sr_frontpage/sr_frontpage.css', [], $sr_frontpage_css_ver, 'all');
         wp_enqueue_script('sr-frontpage-js', SR_THEME_URL . '/inc/sr_frontpage/sr_frontpage.js', ['jquery'], $sr_frontpage_js_ver, true);
 
-        return '<div class="sr-map__wrapper"><div id="sr-map"></div></div>';
+        
+        wp_localize_script('sr-frontpage-js', 'sr_map_config', array(
+            'coordinates' => explode(',',$atts['coordinates']),
+            'zoom' => (int)$atts['zoom'],
+            'pin' => [
+                'url'=>$atts['pin'],
+                'size'=> explode(',',$atts['pin_size'])
+            ],
+        ));
+
+        return '<div class="sr-map__wrapper"><div id="sr-map" style="height:'.$atts['map_height'].'"></div></div>';
     }
 }
 new SR_Frontpage();

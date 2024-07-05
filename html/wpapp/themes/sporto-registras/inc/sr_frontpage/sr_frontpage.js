@@ -1,5 +1,6 @@
 (function ($, window, document, undefined) {
     'use strict';
+    
     const sr_map = {
         init: function () {
             const mapContainer = document.getElementById('sr-map');
@@ -7,11 +8,18 @@
             const map = new maplibregl.Map({
                 container: 'sr-map',
                 style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
-                center: [23.8813, 55.1694],
-                zoom: 7
+                center: sr_map_config.coordinates,
+                zoom: sr_map_config.zoom
             });
-            const marker = new maplibregl.Marker()
-                .setLngLat([23.8813, 55.1694])
+
+            const el = document.createElement('div');
+            el.className = 'marker';
+            el.style.backgroundImage = `url(${sr_map_config.pin.url})`;
+            el.style.width = `${sr_map_config.pin.size[0]}px`;
+            el.style.height = `${sr_map_config.pin.size[1]}px`;
+
+            new maplibregl.Marker({element: el})
+                .setLngLat(sr_map_config.coordinates)
                 .addTo(map);
         }
     }

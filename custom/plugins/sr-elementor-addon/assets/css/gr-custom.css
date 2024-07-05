@@ -1,0 +1,62 @@
+@font-face {
+  font-display: auto;
+  font-family: "gr";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/gr-icon/iconly.eot?1709628314101);
+  src: url(../fonts/gr-icon/iconly.eot?#iefix) format("embedded-opentype"),
+    url(../fonts/gr-icon/iconly.woff2?1709628314101) format("woff2"),
+    url(../fonts/gr-icon/iconly.woff?1709628314101) format("woff"),
+    url(../fonts/gr-icon/iconly.ttf?1709628314101) format("truetype"),
+    url(../fonts/gr-icon/iconly.svg?1709628314101#gr) format("svg");
+}
+
+[class="gr"],
+[class^="gr-"],
+[class*=" gr-"] {
+  display: inline-block;
+  font-family: "gr" !important;
+  font-weight: 400;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gr-chevron-down-2:before {
+  content: "\e000";
+}
+
+.gr-search:before {
+  content: "\e001";
+}
+
+.gr-plus:before {
+  content: "\e002";
+}
+
+.gr-minus:before {
+  content: "\e003";
+}
+
+.gr-menu:before {
+  content: "\e004";
+}
+
+.gr-download:before {
+  content: "\e005";
+}
+
+.gr-close:before {
+  content: "\e006";
+}
+
+.gr-arrow-up-right:before {
+  content: "\e008";
+}
+
+.gr-arrow-right:before {
+  content: "\e009";
+}
