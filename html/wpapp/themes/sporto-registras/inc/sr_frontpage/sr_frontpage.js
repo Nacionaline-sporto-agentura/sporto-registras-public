@@ -62,19 +62,19 @@
                         },
                     });
                 });
+            } else {
+                const el = document.createElement('div');
+                el.className = 'marker';
+                el.style.backgroundImage = `url(${sr_map_config.pin.url})`;
+                el.style.width = `${sr_map_config.pin.size[0]}px`;
+                el.style.height = `${sr_map_config.pin.size[1]}px`;
+
+                new maplibregl.Marker({
+                        element: el
+                    })
+                    .setLngLat(sr_map_config.coordinates)
+                    .addTo(map);
             }
-
-            const el = document.createElement('div');
-            el.className = 'marker';
-            el.style.backgroundImage = `url(${sr_map_config.pin.url})`;
-            el.style.width = `${sr_map_config.pin.size[0]}px`;
-            el.style.height = `${sr_map_config.pin.size[1]}px`;
-
-            new maplibregl.Marker({
-                    element: el
-                })
-                .setLngLat(sr_map_config.coordinates)
-                .addTo(map);
         }
     }
     document.addEventListener('DOMContentLoaded', () => {
