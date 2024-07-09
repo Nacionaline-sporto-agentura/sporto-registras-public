@@ -12,54 +12,57 @@
                 zoom: sr_map_config.zoom
             });
 
-            map.on('load', () => {
-                map.addSource('registras', {
-                    type: 'vector',
-                    tiles: [sr_map_config.api.url+'/tiles/sportsBases/{z}/{x}/{y}'],
-                });
+            if (sr_map_config.add_layer === 'true') {
 
-                map.addLayer({
-                    id: 'cluster-circle',
-                    type: 'circle',
-                    filter: ['all', ['has', 'cluster_id']],
-                    paint: {
-                        'circle-color': '#003D2B',
-                        'circle-opacity': 0.3,
-                        'circle-radius': 20,
-                    },
-                    source: 'registras',
-                    'source-layer': 'sportsBases',
-                });
+                map.on('load', () => {
+                    map.addSource('registras', {
+                        type: 'vector',
+                        tiles: [sr_map_config.api.url + '/tiles/sportsBases/{z}/{x}/{y}'],
+                    });
 
-                map.addLayer({
-                    id: 'point',
-                    type: 'circle',
-                    source: 'registras',
-                    filter: ['all', ['!has', 'cluster_id']],
-                    paint: {
-                        'circle-color': '#003D2B',
-                        'circle-opacity': 1,
-                        'circle-radius': 5,
-                    },
-                    'source-layer': 'sportsBases',
-                });
+                    map.addLayer({
+                        id: 'cluster-circle',
+                        type: 'circle',
+                        filter: ['all', ['has', 'cluster_id']],
+                        paint: {
+                            'circle-color': '#003D2B',
+                            'circle-opacity': 0.3,
+                            'circle-radius': 20,
+                        },
+                        source: 'registras',
+                        'source-layer': 'sportsBases',
+                    });
 
-                map.addLayer({
-                    id: 'cluster',
-                    type: 'symbol',
-                    source: 'registras',
-                    'source-layer': 'sportsBases',
-                    filter: ['all', ['has', 'cluster_id']],
-                    layout: {
-                        'text-field': "{point_count}",
-                        'text-font': ['Noto Sans Regular'],
-                        'text-size': 16,
-                    },
-                    paint: {
-                        'text-color': '#000000'
-                    },
+                    map.addLayer({
+                        id: 'point',
+                        type: 'circle',
+                        source: 'registras',
+                        filter: ['all', ['!has', 'cluster_id']],
+                        paint: {
+                            'circle-color': '#003D2B',
+                            'circle-opacity': 1,
+                            'circle-radius': 5,
+                        },
+                        'source-layer': 'sportsBases',
+                    });
+
+                    map.addLayer({
+                        id: 'cluster',
+                        type: 'symbol',
+                        source: 'registras',
+                        'source-layer': 'sportsBases',
+                        filter: ['all', ['has', 'cluster_id']],
+                        layout: {
+                            'text-field': "{point_count}",
+                            'text-font': ['Noto Sans Regular'],
+                            'text-size': 16,
+                        },
+                        paint: {
+                            'text-color': '#000000'
+                        },
+                    });
                 });
-            });
+            }
 
             const el = document.createElement('div');
             el.className = 'marker';
