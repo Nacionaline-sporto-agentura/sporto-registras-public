@@ -1,4 +1,5 @@
 <?php
+
 defined('ABSPATH') || exit;
 
 class SR_Frontpage
@@ -24,7 +25,7 @@ class SR_Frontpage
             'sr_tab'
         );
 
-        $url = SPORT_REGISTER_API_URL.'/sportsRegister/count';
+        $url = SPORT_REGISTER_API_URL.'/public/sportsRegister/count';
         $response = wp_remote_get($url);
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body);
@@ -61,13 +62,14 @@ class SR_Frontpage
         wp_enqueue_style('sr-frontpage-styles', SR_THEME_URL . '/inc/sr_frontpage/sr_frontpage.css', [], $sr_frontpage_css_ver, 'all');
         wp_enqueue_script('sr-frontpage-js', SR_THEME_URL . '/inc/sr_frontpage/sr_frontpage.js', ['jquery'], $sr_frontpage_js_ver, true);
 
-        
+
         wp_localize_script('sr-frontpage-js', 'sr_map_config', array(
-            'coordinates' => explode(',',$atts['coordinates']),
+            'api' => ['url' => SPORT_REGISTER_API_URL],
+            'coordinates' => explode(',', $atts['coordinates']),
             'zoom' => (int)$atts['zoom'],
             'pin' => [
-                'url'=>$atts['pin'],
-                'size'=> explode(',',$atts['pin_size'])
+                'url' => $atts['pin'],
+                'size' => explode(',', $atts['pin_size'])
             ],
         ));
 
