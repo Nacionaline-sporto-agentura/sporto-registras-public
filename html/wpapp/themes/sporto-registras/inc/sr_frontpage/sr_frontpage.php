@@ -49,7 +49,7 @@ class SR_Frontpage
                 'pin' => SR_THEME_URL . '/assets/images/pin3.svg',
                 'pin_size' => '26,38',
                 'map_height' => '800px',
-                'add_layer'=> 'true'
+                'add_layer'=> 'false'
             ),
             $atts,
             'sr_map'
