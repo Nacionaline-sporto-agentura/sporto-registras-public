@@ -133,8 +133,6 @@ class BEA_Elementor
             bea('minify')->css(BEA_DIR .'/assets/css/gr-custom.css', BEA_DIR .'/assets/css/gr-custom.min.css');
             bea('minify')->js(BEA_DIR .'widgets/biip_off_canvas/assets/js/off_canvas_widget.js', BEA_DIR .'widgets/biip_off_canvas/assets/js/off_canvas_widget.min.js');
             bea('minify')->css(BEA_DIR .'widgets/biip_off_canvas/assets/css/off_canvas_widget.css', BEA_DIR .'widgets/biip_off_canvas/assets/css/off_canvas_widget.min.css');
-            bea('minify')->js(BEA_DIR .'widgets/maplibre/assets/js/maplibre.js', BEA_DIR .'widgets/maplibre/assets/js/maplibre.min.js');
-            bea('minify')->css(BEA_DIR .'widgets/maplibre/assets/css/maplibre.css', BEA_DIR .'widgets/maplibre/assets/css/maplibre.min.css');
         }
 
         wp_enqueue_style('bea-custom', BEA_URI .'/assets/css/bea-custom' . $suffix . '.css', array(), BEA_VERSION);
@@ -144,9 +142,6 @@ class BEA_Elementor
         }
         wp_register_script('biip_off_canvas', BEA_URI . 'widgets/biip_off_canvas/assets/js/off_canvas_widget' . $suffix . '.js', [ 'jquery' ], '1.0.0', true);
         wp_register_style('biip_off_canvas', BEA_URI . 'widgets/biip_off_canvas/assets/css/off_canvas_widget' . $suffix . '.css');
-
-        wp_register_script('maplibre', BEA_URI . 'widgets/maplibre/assets/js/maplibre' . $suffix . '.js', [ 'jquery' ], '1.0.0', true);
-        wp_register_style('maplibre', BEA_URI . 'widgets/maplibre/assets/css/maplibre' . $suffix . '.css');
     }
     public function add_category($elements_manager)
     {
