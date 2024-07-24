@@ -110,6 +110,25 @@ class SR_Table
             'callback' => array($this, 'organizations_list'),
             'permission_callback' => '__return_true',
         ));
+
+        register_rest_route('sport-register/v1', '/sportpersons', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'sport_persons_list'),
+            'permission_callback' => '__return_true',
+        ));
+    }
+
+    public function sport_persons_list(WP_REST_Request $request)
+    {
+        $params = $request->get_query_params();
+        $sr = $this->_request('/sportsPersons');
+        $data = (object) [];
+        $data->recordsTotal = $sr->data['total'] ?? 0;
+        $data->recordsFiltered = $sr->data['total'] ?? 0;
+        $data->data = $sr->data;
+        $data->draw = isset($params['draw']) ? intval($params['draw']) : 0;
+
+        return new WP_REST_Response($data, 200);
     }
 
     public function sport_bases_list(WP_REST_Request $request)
@@ -224,6 +243,7 @@ class SR_Table
     {
         $response = wp_remote_get(SPORT_REGISTER_API_URL. '/public' . $api_endpoint);
 
+        
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
             return new WP_REST_Response(array('error' => $error_message), 500);
@@ -233,6 +253,7 @@ class SR_Table
             return new WP_REST_Response((int)$body, 200);
         }
         $data = json_decode($body, true);
+        
         if (null === $data && strtolower($body) !== "null") {
             return new WP_REST_Response(array('error' => sprintf(__('Nepavyko gauti duomenų JSON formatu iš: %s', 'sr'), SPORT_REGISTER_API_URL .'/public'. $api_endpoint), 500));
         }

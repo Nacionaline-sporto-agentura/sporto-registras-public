@@ -11,7 +11,7 @@ $organization = [
     'id'=> isset($args['data']['id'])? $args['data']['id'] : null,
     'name'=> isset($args['data']['name'])? $args['data']['name'] : null,
     'code'=>isset($args['data']['code'])? $args['data']['code'] : null,
-    'address'=>'Sporto organizacijos adresas',
+    'address'=>isset($args['data']['address'])? $args['data']['address'] : null,
     'email'=>isset($args['data']['email'])? $args['data']['email'] : null,
     'phone'=>isset($args['data']['phone'])? $args['data']['phone'] : null,
     'webPage'=>isset($args['data']['data']['url'])? $args['data']['data']['url'] : null,
@@ -49,23 +49,28 @@ if(!function_exists('fix_url')) {
         return $url;
     }
 }
-
-$sportTypes = ['Alpinizmas','Badmintonas','Boksas','Buriavimas'];
-
-for($i=0; $i<=5; $i++){
+$organizationSportTypes = [];
+foreach($args['data']['sportsBases'] as $i => $sportBase) {
+    $address = sprintf('%s %s, %s, %s', $sportBase['address']['street'], $sportBase['address']['house'], $sportBase['address']['city'], $sportBase['address']['municipality']);
+    $sportTypes = [];
+    foreach($sportBase['sportTypes'] as $sportType) {
+        $sportTypes[] = $sportType['name'];
+        $organizationSportTypes[$sportType['name']] = 1;
+    }
     $sport_bases[] = [
-        'id'=>$i,
-        'name' => 'Sporto bazės pavadinimas '.$i,
-        'address' => 'Sporto bazės adresas '.$i,
-        'sport_types' => array_chunk(['Alpinizmas','Badmintonas','Boksas','Buriavimas'],rand(1,4))[0],
+        'id'=>$sportBase['id'],
+        'name' => $sportBase['name'],
+        'address' => $address,
+        'sport_types' => $sportTypes,
     ];
 }
+$organizationSportTypes = array_keys($organizationSportTypes);
 ?>
 
 <div class="sport-base__address"><span class="sport-base__address__item"><span class="sport-base__address__icon"></span>
         <?php echo $organization['address'];?></span> <span class="sport-base__address__item"><span
             class="sport-base__code__icon"></span> <?php _e('Įm.k.','sr');?> <?php echo $organization['code'];?></span></div>
-<ul class="sport-base__types"><?php echo !empty($sportTypes) ? '<li>'.implode('</li><li>', $sportTypes).'</li>' : '';?>
+<ul class="sport-base__types"><?php echo !empty($organizationSportTypes) ? '<li>'.implode('</li><li>', $organizationSportTypes).'</li>' : '';?>
 </ul>
 
 <div class="sport-base__data">
@@ -90,6 +95,12 @@ for($i=0; $i<=5; $i++){
         </a>
         <?php } ?>
     </div>
+    <?php }else{ ?>
+        <div class="sport-base__wrapper">
+            <div class="sport-base__space">
+            <?php echo __('Ši organizacija neturi prisikirtų sporto bazių.','sr');?>
+            </div>
+        </div>
     <?php } ?>
     <div class="sport-base__manger">
         <?php if(!empty($organization)) { ?>

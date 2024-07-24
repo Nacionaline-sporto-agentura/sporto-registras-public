@@ -127,7 +127,7 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            return 'API nėra';
+                            return row.address !=null ? row.address : '-';
                         }
                     },
                     {
@@ -152,6 +152,69 @@
                     //     }
                     // }
                 ]
+            },
+            'sportpersons': {
+                url: sr_table_vars.REST_URL + 'sport-register/v1/sportpersons',
+                columns : [
+                    {
+                        title: 'Sporto šaka',
+                        name: 'sportTypeName',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.sportTypeName ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Treneriai',
+                        name: 'coach',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.coach ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Teisėjai',
+                        name: 'referee',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.referee ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Aukšto meistriškumo sporto instruktoriai',
+                        name: 'amsInstructor',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.amsInstructor ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Fizinio aktyvumo specialistai',
+                        name: 'faSpecialist',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.faSpecialist ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Fizinio aktyvumo instruktoriai',
+                        name: 'faInstructor',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.faInstructor ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Sportininkai',
+                        name: 'athlete',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.athlete ?? '-';
+                        }
+                    }
+                ],
+                columnDefs: [],
+                serverSide: false
             }
         },
         sanitize_title: function (title) {
@@ -160,19 +223,19 @@
         },
         createDataTable: function (config) {
             this.$table.DataTable({
-                processing: true,
-                serverSide: true,
-                deferRender: true,
+                processing: config.processing !== undefined ? config.processing : true,
+                serverSide: config.serverSide !== undefined ? config.serverSide : true,
+                deferRender: config.deferRender !== undefined ? config.deferRender : true,
                 searchDelay: 350,
                 ajax: {
                     url: config.url,
                     dataSrc: 'data',
-                    data: function (d) {
+                    data: config.serverSide ? function (d) {
                         d.page = Math.ceil(d.start / d.length) + 1;
                         d.pageSize = d.length;
                         d.sort = d.order[0].dir === 'asc' ? d.columns[d.order[0].column].data : '-' + d.columns[d.order[0].column].data;
                         d.search = d.search.value;
-                    },
+                    }: undefined,
                     error: function (xhr, error, code) {
                         console.error("Ajax request failed:", error, code);
                     }
