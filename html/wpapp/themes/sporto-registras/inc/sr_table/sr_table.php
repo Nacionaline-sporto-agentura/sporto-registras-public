@@ -61,14 +61,14 @@ class SR_Table
                 $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
                 $out = $this->show_404();
             }
-        }elseif(is_page($this->organization_page) && $sr_id > 0) {
+        } elseif(is_page($this->organization_page) && $sr_id > 0) {
             $sr = $this->_request('/organizations/' . $sr_id);
 
-            
+
             $types_fields = $this->_request('/typesAndFields/');
 
             if($sr instanceof WP_REST_Response && isset($sr->data['id'])) {
-                
+
                 $page_content = $this->load_component('inc/sr_table/components/organization-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
 
                 $content = str_replace('[organization-title]', $sr->data['name'], $content);
@@ -78,9 +78,9 @@ class SR_Table
                 $out = $this->show_404();
             }
         } else {
-            if(is_page($this->sport_base_page)){
+            if(is_page($this->sport_base_page)) {
                 $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
-            }elseif(is_page($this->organization_page)){
+            } elseif(is_page($this->organization_page)) {
                 $content = str_replace('[organization-title]', __('Sporto organizacija nerasta', 'sr'), $content);
             }
             $out = $this->show_404();
@@ -110,6 +110,25 @@ class SR_Table
             'callback' => array($this, 'organizations_list'),
             'permission_callback' => '__return_true',
         ));
+
+        register_rest_route('sport-register/v1', '/sportpersons', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'sport_persons_list'),
+            'permission_callback' => '__return_true',
+        ));
+    }
+
+    public function sport_persons_list(WP_REST_Request $request)
+    {
+        $params = $request->get_query_params();
+        $sr = $this->_request('/sportsPersons');
+        $data = (object) [];
+        $data->recordsTotal = $sr->data['total'] ?? 0;
+        $data->recordsFiltered = $sr->data['total'] ?? 0;
+        $data->data = $sr->data;
+        $data->draw = isset($params['draw']) ? intval($params['draw']) : 0;
+
+        return new WP_REST_Response($data, 200);
     }
 
     public function sport_bases_list(WP_REST_Request $request)
@@ -151,7 +170,7 @@ class SR_Table
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
 
-        
+
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
@@ -209,7 +228,7 @@ class SR_Table
                 'TABLE_ID' => $atts['id'],
                 'THEME_URL' => SR_THEME_URL,
                 'REST_URL' => rest_url(),
-                'SPORT_REGISTER_API_URL' => SPORT_REGISTER_API_URL,
+                'SPORT_REGISTER_API_URL' => SPORT_REGISTER_API_URL.'/public',
                 'SPORT_BASE_URL' => get_permalink($sport_base_page),
                 'I18N' => [
                     'READ_MORE' => __('Peržiūrėti', 'sr'),
@@ -222,8 +241,9 @@ class SR_Table
 
     private function _request($api_endpoint)
     {
-        $response = wp_remote_get(SPORT_REGISTER_API_URL . $api_endpoint);
+        $response = wp_remote_get(SPORT_REGISTER_API_URL. '/public' . $api_endpoint);
 
+        
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
             return new WP_REST_Response(array('error' => $error_message), 500);
@@ -233,8 +253,9 @@ class SR_Table
             return new WP_REST_Response((int)$body, 200);
         }
         $data = json_decode($body, true);
+        
         if (null === $data && strtolower($body) !== "null") {
-            return new WP_REST_Response(array('error' => sprintf(__('Nepavyko gauti duomenų JSON formatu iš: %s', 'sr'), SPORT_REGISTER_API_URL . $api_endpoint), 500));
+            return new WP_REST_Response(array('error' => sprintf(__('Nepavyko gauti duomenų JSON formatu iš: %s', 'sr'), SPORT_REGISTER_API_URL .'/public'. $api_endpoint), 500));
         }
         if (!is_array($data) && !is_object($data)) {
             $data = array($data);
