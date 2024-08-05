@@ -174,10 +174,6 @@ class SR_Table
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
-            //'sort' => ($order === 'desc' ? '' : '-') . $orderColumn,
-            // 'fields' => 'id,name',
-            // 'populate' => '',
-            // 'searchPublic' => $search
         );
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
@@ -241,9 +237,9 @@ class SR_Table
 
     private function _request($api_endpoint)
     {
-        $response = wp_remote_get(SPORT_REGISTER_API_URL. '/public' . $api_endpoint);
+        $response = wp_remote_get(SPORT_REGISTER_API_URL .'/public'. $api_endpoint);
 
-        
+
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
             return new WP_REST_Response(array('error' => $error_message), 500);
@@ -253,9 +249,9 @@ class SR_Table
             return new WP_REST_Response((int)$body, 200);
         }
         $data = json_decode($body, true);
-        
+
         if (null === $data && strtolower($body) !== "null") {
-            return new WP_REST_Response(array('error' => sprintf(__('Nepavyko gauti duomenų JSON formatu iš: %s', 'sr'), SPORT_REGISTER_API_URL .'/public'. $api_endpoint), 500));
+            return new WP_REST_Response(array('error' => sprintf(__('Nepavyko gauti duomenų JSON formatu iš: %s', 'sr'), SPORT_REGISTER_API_URL.'/public'. $api_endpoint), 500));
         }
         if (!is_array($data) && !is_object($data)) {
             $data = array($data);
