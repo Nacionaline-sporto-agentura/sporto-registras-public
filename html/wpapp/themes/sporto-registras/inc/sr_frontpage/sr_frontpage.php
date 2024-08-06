@@ -49,7 +49,7 @@ class SR_Frontpage
                 'pin' => SR_THEME_URL . '/assets/images/pin3.svg',
                 'pin_size' => '26,38',
                 'map_height' => '800px',
-                'add_layer'=> 'false'
+                'add_layer' => 'false'
             ),
             $atts,
             'sr_map'
@@ -68,7 +68,7 @@ class SR_Frontpage
             'api' => ['url' => SPORT_REGISTER_API_URL],
             'coordinates' => explode(',', $atts['coordinates']),
             'zoom' => (int)$atts['zoom'],
-            'add_layer' => $atts['add_layer'] === 'true' ? 'true' : 'false', 
+            'add_layer' => $atts['add_layer'] === 'true' ? 'true' : 'false',
             'pin' => [
                 'url' => $atts['pin'],
                 'size' => explode(',', $atts['pin_size'])
