@@ -25,7 +25,7 @@ class SR_Frontpage
             'sr_tab'
         );
 
-        $url = SPORT_REGISTER_API_URL.'/public/sportsRegister/count';
+        $url = SPORT_REGISTER_API_URL.'/sportsBases/sportsRegister/count/public';
         $response = wp_remote_get($url);
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body);

@@ -13,7 +13,6 @@
             });
 
             if (sr_map_config.add_layer === 'true') {
-                console.log(sr_map_config.api.url)
                 map.on('load', () => {
                     map.addSource('registras', {
                         type: 'vector',
