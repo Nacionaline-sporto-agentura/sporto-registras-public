@@ -33,6 +33,8 @@
                         title: 'Sporto bazės pavadinimas',
                         data: 'name',
                         name: 'name',
+                        orderable: true,
+                        searchable: true,
                     },
                     {
                         title: 'Rūšis',
@@ -46,10 +48,10 @@
                     },
                     {
                         title: 'Savivaldybė',
-                        data: 'address.municipality',
-                        name: 'address.municipality',
-                        orderable: false,
-                        searchable: false
+                        data: 'municipality',
+                        name: 'municipality',
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         title: 'Sporto šakos',
@@ -58,26 +60,27 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            return sr_table.getSportTypes(row.publicSpaces);
+                            return row.sportTypes.map(function (sportType) {
+                                return sportType.name;
+                            }).join(', ');
                         }
                     },
                     {
                         title: 'Erdvių skaičius',
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            return Object.keys(row.publicSpaces).length;
-                        }
+                        data: 'spacesCount',
+                        name: 'spacesCount',
+                        orderable: true,
+                        searchable: false
                     },
                     {
                         title: 'Organizacija',
                         data: null,
-                        orderable: false,
-                        searchable: false,
+                        name: 'tenant.name',
                         render: function (data, type, row) {
-                            return 'Kas įvedė informaciją';
-                        }
+                            return row.tenant.name ?? '-';
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         title: 'Veiksmas',

@@ -49,8 +49,8 @@ class SR_Table
         $sr_id = absint(get_query_var('sr_id'));
         $out = '';
         if(is_page($this->sport_base_page) && $sr_id > 0) {
-            $sr = $this->_request('/sportsbases/' . $sr_id);
-            $types_fields = $this->_request('/typesAndFields/');
+            $sr = $this->_request('/sportsBases/'. $sr_id .'/public');
+            $types_fields = $this->_request('/types/sportsBases/spaces/typesAndFields/public');
 
             if($sr instanceof WP_REST_Response && !isset($sr->data['code'])) {
                 $page_content = $this->load_component('inc/sr_table/components/sport-base-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
@@ -62,10 +62,8 @@ class SR_Table
                 $out = $this->show_404();
             }
         } elseif(is_page($this->organization_page) && $sr_id > 0) {
-            $sr = $this->_request('/organizations/' . $sr_id);
-
-
-            $types_fields = $this->_request('/typesAndFields/');
+            $sr = $this->_request('/tenants/organizations/' . $sr_id .'/public');
+            $types_fields = $this->_request('/types/sportsBases/spaces/typesAndFields/public');
 
             if($sr instanceof WP_REST_Response && isset($sr->data['id'])) {
 
@@ -121,7 +119,7 @@ class SR_Table
     public function sport_persons_list(WP_REST_Request $request)
     {
         $params = $request->get_query_params();
-        $sr = $this->_request('/sportsPersons');
+        $sr = $this->_request('/sportsPersons/count/public'); //neveikia
         $data = (object) [];
         $data->recordsTotal = $sr->data['total'] ?? 0;
         $data->recordsFiltered = $sr->data['total'] ?? 0;
@@ -138,7 +136,7 @@ class SR_Table
         $length = $params['length'] ?? 10;
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
-        $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
+        $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'id';
 
         $api_params = array(
             'page' => ($start / $length) + 1,
@@ -151,7 +149,7 @@ class SR_Table
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
 
-        $sr = $this->_request('/sportsbases' . $query);
+        $sr = $this->_request('/sportsBases/public' . $query);
 
         $data = (object) [];
         $data->recordsTotal = $sr->data['total'] ?? 0;
@@ -178,7 +176,7 @@ class SR_Table
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
 
-        $sr = $this->_request('/organizations' . $query);
+        $sr = $this->_request('/tenants/organizations/public' . $query);
 
         $data = (object) [];
         $data->recordsTotal = $sr->data['total'] ?? 0;
@@ -237,7 +235,7 @@ class SR_Table
 
     private function _request($api_endpoint)
     {
-        $response = wp_remote_get(SPORT_REGISTER_API_URL .'/public'. $api_endpoint);
+        $response = wp_remote_get(SPORT_REGISTER_API_URL . $api_endpoint);
 
 
         if (is_wp_error($response)) {
