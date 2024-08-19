@@ -11,13 +11,35 @@ class SR_Table
         $settings = get_option('sr_settings', []);
         $this->sport_base_page = $settings['sport_bases_page_id'] ?? 0;
         $this->organization_page = $settings['sport_organization_page_id'] ?? 0;
-        
+
         add_filter('query_vars', array($this, 'query_vars'));
         add_filter('the_content', array($this, 'filter_the_content'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('init', array($this, 'register_rewrite_rule'));
         add_shortcode('sr_table', array($this, 'sr_table_shortcode'));
+    }
+    public static function fix_var($var, $key)
+    {
+        if (isset($var[$key]) && is_array($var[$key])) {
+            return isset($var[$key]['name'])? $var[$key]['name'] : $var[$key]['plot_or_building_number'];
+        }elseif(isset($var[$key])){
+            return $var[$key] ?? null;
+        } 
+    }
+    public static function format_address($raw)
+    {
+        $street = self::fix_var($raw, 'street');
+        $house = self::fix_var($raw, 'house');
+        $apartment = self::fix_var($raw, 'apartment');
+        $city = self::fix_var($raw, 'city');
+        $municipality = self::fix_var($raw, 'municipality');
+
+        $address = (isset($street)?$street.' ':''). 
+            (isset($house)?$house.(isset($apartment)?'-'.$apartment:''):''). 
+            (isset($city)? ', '. $city:''). 
+            (isset($municipality)? ', '.$municipality:'');
+        return $address;
     }
     public function query_vars($vars)
     {

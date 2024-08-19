@@ -3,7 +3,10 @@
 if(empty($args['data'])) {
     return;
 }
-$sportbases_page = 338;
+$settings = get_option('sr_settings', []);
+$sport_bases_page_id = $settings['sport_bases_page_id'] ?? 0;
+$sportbases_page = wp_get_post_parent_id($sport_bases_page_id);
+
 
 $foundedAt = isset($args['data']['data']['foundedAt'])? date('Y', strtotime($args['data']['data']['foundedAt'])) : null;
 $updatedAt = isset($args['data']['data']['foundedAt'])? date('Y-m-d', strtotime($args['data']['data']['foundedAt'])) : null;
@@ -49,17 +52,36 @@ if(!function_exists('fix_url')) {
         return $url;
     }
 }
+if(!function_exists('fix_var')) {
+    function fix_var($var)
+    {
+        if (isset($var) && is_array($var)) {
+            return isset($var['name'])? $var['name'] : $var['plot_or_building_number'];
+        }else{
+            return isset($var)? $var : '';
+        }
+        
+    }
+}
 $organizationSportTypes = [];
 foreach($args['data']['sportsBases'] as $i => $sportBase) {
-    $address = sprintf('%s %s, %s, %s', $sportBase['address']['street'], $sportBase['address']['house'], $sportBase['address']['city'], $sportBase['address']['municipality']);
+    
+    $address = SR_Table::format_address($sportBase['address']);
+
     $sportTypes = [];
     foreach($sportBase['sportTypes'] as $sportType) {
-        $sportTypes[] = $sportType['name'];
-        $organizationSportTypes[$sportType['name']] = 1;
+        if(empty($sportType['name'])){
+            continue;
+        }
+        $name = $sportType['name'];
+        $sportTypes[] = $name;
+        $organizationSportTypes[$name] = 1;
     }
+    $sport_base_id = $sportBase['id'] ?? '';
+    $sport_base_name = $sportBase['name'] ?? '';
     $sport_bases[] = [
-        'id'=>$sportBase['id'],
-        'name' => $sportBase['name'],
+        'id'=>$sport_base_id,
+        'name' => $sport_base_name,
         'address' => $address,
         'sport_types' => $sportTypes,
     ];
@@ -76,7 +98,7 @@ $organizationSportTypes = array_keys($organizationSportTypes);
 <div class="sport-base__data">
     <?php if(!empty($sport_bases)) {?>
     <div class="sport-base__wrapper">
-        <?php foreach($sport_bases as $sport_base) { ?>
+        <?php foreach($sport_bases as $sport_base) {  ?>
         <a class="sport-base__space" href="<?php echo get_the_permalink($sportbases_page).$sport_base['id'].'/'.sanitize_title($sport_base['name']); ?>">
             <div class="sport-base__space__heading">
                 <h3 class="sport-base__space-title"><?php echo $sport_base['name'];?></h3>
