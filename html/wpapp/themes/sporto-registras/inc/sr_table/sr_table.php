@@ -8,8 +8,10 @@ class SR_Table
     private $organization_page;
     public function __construct()
     {
-        $this->sport_base_page = 358;
-        $this->organization_page = 634;
+        $settings = get_option('sr_settings', []);
+        $this->sport_base_page = $settings['sport_bases_page_id'] ?? 0;
+        $this->organization_page = $settings['sport_organization_page_id'] ?? 0;
+        
         add_filter('query_vars', array($this, 'query_vars'));
         add_filter('the_content', array($this, 'filter_the_content'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
