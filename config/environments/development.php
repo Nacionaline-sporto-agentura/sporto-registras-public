@@ -15,7 +15,7 @@ Config::define('WP_DISABLE_FATAL_ERROR_HANDLER', true);
 Config::define('SCRIPT_DEBUG', true);
 Config::define('DISALLOW_INDEXING', true);
 
-ini_set('display_errors', '1');
+ini_set('display_errors', 1);
 
 // Enable plugin and theme updates and installation from the admin
 Config::define('DISALLOW_FILE_MODS', false);
@@ -26,4 +26,4 @@ Config::define('WP_MEMORY_LIMIT', '512M');
  */
 Config::define('WP_SENTRY_PHP_DSN', env('SENTRY_DSN'));
 Config::define('WP_SENTRY_ENV', 'development');
-Config::define('WP_SENTRY_ERROR_TYPES', E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_USER_DEPRECATED & ~E_USER_NOTICE);
+Config::define('WP_SENTRY_ERROR_TYPES', E_ALL);

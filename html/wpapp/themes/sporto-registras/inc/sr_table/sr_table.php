@@ -8,14 +8,38 @@ class SR_Table
     private $organization_page;
     public function __construct()
     {
-        $this->sport_base_page = 358;
-        $this->organization_page = 634;
+        $settings = get_option('sr_settings', []);
+        $this->sport_base_page = $settings['sport_bases_page_id'] ?? 0;
+        $this->organization_page = $settings['sport_organization_page_id'] ?? 0;
+
         add_filter('query_vars', array($this, 'query_vars'));
         add_filter('the_content', array($this, 'filter_the_content'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('init', array($this, 'register_rewrite_rule'));
         add_shortcode('sr_table', array($this, 'sr_table_shortcode'));
+    }
+    public static function fix_var($var, $key)
+    {
+        if (isset($var[$key]) && is_array($var[$key])) {
+            return isset($var[$key]['name']) ? $var[$key]['name'] : $var[$key]['plot_or_building_number'];
+        } elseif(isset($var[$key])) {
+            return $var[$key] ?? null;
+        }
+    }
+    public static function format_address($raw)
+    {
+        $street = self::fix_var($raw, 'street');
+        $house = self::fix_var($raw, 'house');
+        $apartment = self::fix_var($raw, 'apartment');
+        $city = self::fix_var($raw, 'city');
+        $municipality = self::fix_var($raw, 'municipality');
+
+        $address = (isset($street) ? $street.' ' : '').
+            (isset($house) ? $house.(isset($apartment) ? '-'.$apartment : '') : '').
+            (isset($city) ? ', '. $city : '').
+            (isset($municipality) ? ', '.$municipality : '');
+        return $address;
     }
     public function query_vars($vars)
     {
@@ -134,7 +158,7 @@ class SR_Table
         $params = $request->get_query_params();
         $start = $params['start'] ?? 0;
         $length = $params['length'] ?? 10;
-        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $search = isset($params['search']['value']) ? sanitize_text_field($params['search']['value']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'id';
 
@@ -142,13 +166,10 @@ class SR_Table
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
             'sort' => ($order === 'desc' ? '' : '-') . $orderColumn,
-            'fields' => 'id,name',
-            'populate' => '',
-            'searchPublic' => $search
+            'query[name]' => $search
         );
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-
         $sr = $this->_request('/sportsBases/public' . $query);
 
         $data = (object) [];
@@ -164,7 +185,7 @@ class SR_Table
         $params = $request->get_query_params();
         $start = $params['start'] ?? 0;
         $length = $params['length'] ?? 10;
-        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $search = isset($params['search']['value']) ? sanitize_text_field($params['search']['value']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
 
@@ -172,10 +193,10 @@ class SR_Table
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
+            'query[name]' => $search,
         );
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-
         $sr = $this->_request('/tenants/organizations/public' . $query);
 
         $data = (object) [];

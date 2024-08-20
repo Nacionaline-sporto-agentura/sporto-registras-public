@@ -48,10 +48,13 @@
                     },
                     {
                         title: 'Savivaldybė',
-                        data: 'municipality',
+                        data: null,
                         name: 'municipality',
                         orderable: true,
-                        searchable: true
+                        searchable: true,
+                        render: function (data, type, row) {
+                            return row.municipality != null ? row.municipality.name !=null ? row.municipality.name : row.municipality: '-';                                                 
+                        }
                     },
                     {
                         title: 'Sporto šakos',

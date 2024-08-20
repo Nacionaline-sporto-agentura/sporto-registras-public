@@ -3,13 +3,14 @@
 if(empty($args['data'])) {
     return;
 }
-
-$address = sprintf('%s %s, %s, %s', $args['data']['address']['street'], $args['data']['address']['house'], $args['data']['address']['city'], $args['data']['address']['municipality']);
+$address = SR_Table::format_address($args['data']['address']);
 
 $sportTypes = [];
-foreach($args['data']['publicSpaces'] as $publicSpaces) {
-    foreach($publicSpaces['sportTypes'] as $sportType) {
-        $sportTypes[] = $sportType['name'];
+if(isset($args['data']['publicSpaces'])){
+    foreach($args['data']['publicSpaces'] as $publicSpaces) {
+        foreach($publicSpaces['sportTypes'] as $sportType) {
+            $sportTypes[] = $sportType['name'];
+        }
     }
 }
 $photos = '';
@@ -53,7 +54,7 @@ if(!function_exists('translate_places')) {
         }
     }
 }
-$construction_year = get_construction_date($args['data']['publicSpaces']);
+$construction_year = isset($args['data']['publicSpaces']) ? get_construction_date($args['data']['publicSpaces']) : false;
 $technicalConditionClass = [
     1 => 'sport-base__space__technicalCondition--excellent', //Puiki
     2 => 'sport-base__space__technicalCondition--good', //Gera
@@ -285,5 +286,3 @@ if(!function_exists('fix_url')) {
     </div>
     <?php } ?>
 </div>
-
-<?php //print_r($args['data']);?>
