@@ -158,7 +158,7 @@ class SR_Table
         $params = $request->get_query_params();
         $start = $params['start'] ?? 0;
         $length = $params['length'] ?? 10;
-        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $search = isset($params['search']['value']) ? sanitize_text_field($params['search']['value']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'id';
 
@@ -166,13 +166,10 @@ class SR_Table
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
             'sort' => ($order === 'desc' ? '' : '-') . $orderColumn,
-            'fields' => 'id,name',
-            'populate' => '',
-            'searchPublic' => $search
+            'query[name]' => $search
         );
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-
         $sr = $this->_request('/sportsBases/public' . $query);
 
         $data = (object) [];
@@ -196,7 +193,7 @@ class SR_Table
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
-            'search' => $search,
+            'query[name]' => $search,
         );
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
