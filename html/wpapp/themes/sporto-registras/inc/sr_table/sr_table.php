@@ -22,10 +22,10 @@ class SR_Table
     public static function fix_var($var, $key)
     {
         if (isset($var[$key]) && is_array($var[$key])) {
-            return isset($var[$key]['name'])? $var[$key]['name'] : $var[$key]['plot_or_building_number'];
-        }elseif(isset($var[$key])){
+            return isset($var[$key]['name']) ? $var[$key]['name'] : $var[$key]['plot_or_building_number'];
+        } elseif(isset($var[$key])) {
             return $var[$key] ?? null;
-        } 
+        }
     }
     public static function format_address($raw)
     {
@@ -35,10 +35,10 @@ class SR_Table
         $city = self::fix_var($raw, 'city');
         $municipality = self::fix_var($raw, 'municipality');
 
-        $address = (isset($street)?$street.' ':''). 
-            (isset($house)?$house.(isset($apartment)?'-'.$apartment:''):''). 
-            (isset($city)? ', '. $city:''). 
-            (isset($municipality)? ', '.$municipality:'');
+        $address = (isset($street) ? $street.' ' : '').
+            (isset($house) ? $house.(isset($apartment) ? '-'.$apartment : '') : '').
+            (isset($city) ? ', '. $city : '').
+            (isset($municipality) ? ', '.$municipality : '');
         return $address;
     }
     public function query_vars($vars)
@@ -188,7 +188,7 @@ class SR_Table
         $params = $request->get_query_params();
         $start = $params['start'] ?? 0;
         $length = $params['length'] ?? 10;
-        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $search = isset($params['search']['value']) ? sanitize_text_field($params['search']['value']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
 
@@ -196,10 +196,10 @@ class SR_Table
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
+            'search' => $search,
         );
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-
         $sr = $this->_request('/tenants/organizations/public' . $query);
 
         $data = (object) [];
