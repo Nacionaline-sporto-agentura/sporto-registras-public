@@ -16,7 +16,7 @@
                 map.on('load', () => {
                     map.addSource('registras', {
                         type: 'vector',
-                        tiles: [sr_map_config.api.url + '/tiles/sportsBases/{z}/{x}/{y}'],
+                        tiles: [sr_map_config.base_map_url + '/{z}/{x}/{y}'],
                     });
 
                     map.addLayer({
