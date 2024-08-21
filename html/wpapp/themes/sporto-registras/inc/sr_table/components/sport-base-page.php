@@ -58,10 +58,11 @@ if(!function_exists('fix_url')) {
         return $url;
     }
 }
-
 ?>
 
-<div class="sport-base__address"><span class="sport-base__address__icon"></span> <?php echo $address;?></div>
+<div class="sport-base__address"><svg class="sport-base__address__icon" xmlns="
+http://www.w3.org/2000/svg"
+width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg> <?php echo $address;?></div>
 <ul class="sport-base__types"><?php echo !empty($sportTypes) ? '<li>'.implode('</li><li>', $sportTypes).'</li>' : '';?></ul>
 <?php if($photos_count > 0) { ?>
 <div class="sport-base__photos__wrapper">
@@ -82,36 +83,34 @@ if(!function_exists('fix_url')) {
         <div class="sport-base__tabs-header">
             <div class="sport-base__tab sport-base__tab--active" data-tab="overview"><?php _e('Apžvalga', 'sr');?></div>
             <?php if(!empty($args['data']['spaces'])) {?><div class="sport-base__tab" data-tab="spaces"><?php _e('Erdvės', 'sr');?></div><?php } ?>
-            <?php if(!empty($args['data']['publicTenants'])) {?><div class="sport-base__tab" data-tab="organizations"><?php _e('Organizacijos', 'sr');?></div><?php } ?>
+            <?php if(!empty($args['data']['tenants'])) {?><div class="sport-base__tab" data-tab="organizations"><?php _e('Organizacijos', 'sr');?></div><?php } ?>
         </div>
         <div class="sport-base__tab-content" data-tab="overview">
             <ul class="sport-base__overview">
                 <?php if(!empty($args['data']['publicWifi'])) { ?>
-                    <li><span class="sport-base__ico sport-base__ico-publicWifi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <li><svg class="sport-base__ico sport-base__ico-publicWifi" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M5 13C6.86929 11.1677 9.38247 10.1414 12 10.1414C14.6175 10.1414 17.1307 11.1677 19 13" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M8.5 16.5C9.43464 15.5839 10.6912 15.0707 12 15.0707C13.3088 15.0707 14.5654 15.5839 15.5 16.5" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M2 8.82C4.75011 6.36022 8.31034 5.00034 12 5.00034C15.6897 5.00034 19.2499 6.36022 22 8.82" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M12 20H12.01" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</span> <span class="sport-base__label"><?php _e('Viešas WiFi internetas', 'sr');?></span></li>
+</svg> <span class="sport-base__label"><?php _e('Viešas WiFi internetas', 'sr');?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['parkingPlaces'])) { ?>
-                    <li><span class="sport-base__ico sport-base__ico-parkingPlaces"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <li><svg class="sport-base__ico sport-base__ico-parkingPlaces" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 17V7H13C13.7956 7 14.5587 7.31607 15.1213 7.87868C15.6839 8.44129 16 9.20435 16 10C16 10.7956 15.6839 11.5587 15.1213 12.1213C14.5587 12.6839 13.7956 13 13 13H9" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Automobilių stovėjimo aikštelė su %d %s', 'sr'), $args['data']['parkingPlaces'], translate_places($args['data']['parkingPlaces']));?></span></li>
+ <span class="sport-base__label"><?php echo sprintf(__('Automobilių stovėjimo aikštelė su %d %s', 'sr'), $args['data']['parkingPlaces'], translate_places($args['data']['parkingPlaces']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['methodicalClasses'])) { ?>
-                    <li><span class="sport-base__ico sport-base__ico-methodicalClasses"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <li><svg class="sport-base__ico sport-base__ico-methodicalClasses" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M2 3H22" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M21 3V14C21 14.5304 20.7893 15.0391 20.4142 15.4142C20.0391 15.7893 19.5304 16 19 16H5C4.46957 16 3.96086 15.7893 3.58579 15.4142C3.21071 15.0391 3 14.5304 3 14V3" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M7 21L12 16L17 21" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Metodinės klasės su %d %s', 'sr'), $args['data']['methodicalClasses'], translate_places($args['data']['methodicalClasses']));?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Metodinės klasės su %d %s', 'sr'), $args['data']['methodicalClasses'], translate_places($args['data']['methodicalClasses']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($args['data']['saunas'])) { ?>
-                    <li><span class="sport-base__ico sport-base__ico-saunas"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <li><svg class="sport-base__ico sport-base__ico-saunas" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_624_3513)">
 <path d="M10 5C10.5523 5 11 4.55228 11 4C11 3.44772 10.5523 3 10 3C9.44772 3 9 3.44772 9 4C9 4.55228 9.44772 5 10 5Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M15 18V21" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -126,17 +125,15 @@ if(!function_exists('fix_url')) {
 <rect width="24" height="24" fill="white"/>
 </clipPath>
 </defs>
-</svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpa su %d %s', 'sr'), $args['data']['saunas'], translate_places($args['data']['saunas']));?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpa su %d %s', 'sr'), $args['data']['saunas'], translate_places($args['data']['saunas']));?></span></li>
                 <?php } ?>
                 <?php if(!empty($construction_year)) { ?>
-                    <li><span class="sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <li><svg class="sport-base__ico sport-base__ico-constructionDate" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M2 18C2 18.2652 2.10536 18.5196 2.29289 18.7071C2.48043 18.8946 2.73478 19 3 19H21C21.2652 19 21.5196 18.8946 21.7071 18.7071C21.8946 18.5196 22 18.2652 22 18V16C22 15.7348 21.8946 15.4804 21.7071 15.2929C21.5196 15.1054 21.2652 15 21 15H3C2.73478 15 2.48043 15.1054 2.29289 15.2929C2.10536 15.4804 2 15.7348 2 16V18Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M10 10V5C10 4.73478 10.1054 4.48043 10.2929 4.29289C10.4804 4.10536 10.7348 4 11 4H13C13.2652 4 13.5196 4.10536 13.7071 4.29289C13.8946 4.48043 14 4.73478 14 5V10" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M4 15V12C4 10.4087 4.63214 8.88258 5.75736 7.75736C6.88258 6.63214 8.4087 6 10 6" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M14 6C15.5913 6 17.1174 6.63214 18.2426 7.75736C19.3679 8.88258 20 10.4087 20 12V15" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</span> <span class="sport-base__label"><?php echo sprintf(__('Pastatyta %d m.', 'sr'), $construction_year); ?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Pastatyta %d m.', 'sr'), $construction_year); ?></span></li>
                 <?php } ?>
             </ul>
         </div>
@@ -186,12 +183,12 @@ if(!function_exists('fix_url')) {
             <?php } ?>
             <?php } ?>
         </div>
-        <?php if(!empty($args['data']['publicTenants'])) {?>
+        <?php if(!empty($args['data']['tenants'])) {?>
         <div class="sport-base__tab-content" data-tab="organizations">
-            <?php foreach($args['data']['publicTenants'] as $publicTenant) { ?>
+            <?php foreach($args['data']['tenants'] as $tenant) { ?>
                 <div class="sport-base__space">
-                    <h3 class="sport-base__space-title"><?php echo $publicTenant['companyName'];?></h3>
-                    <div class="sport-base__space__type"><?php echo $publicTenant['companyCode'];?></div>
+                    <h3 class="sport-base__space-title"><?php echo $tenant['name'];?></h3>
+                    <div class="sport-base__space__type rm-margin"><?php echo $tenant['code'];?></div>
                 </div>
             <?php } ?>
         </div>
@@ -205,24 +202,22 @@ if(!function_exists('fix_url')) {
         <div class="sport-base__manger-title"><?php echo $tenant['name'];?></div>
         <div class="sport-base__manger-contacts"> 
         <?php if(!empty($tenant['email'])) {?>
-            <div class="sport-base__manger-email"><span class="sport-base__ico sport-base__ico-envelope"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="sport-base__manger-email"><svg class="sport-base__ico sport-base__ico-envelope" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</span> <a href="mailto:<?php echo $tenant['email'];?>"><?php echo $tenant['email'];?></a></div><?php } ?>
+</svg> <a href="mailto:<?php echo $tenant['email'];?>"><?php echo $tenant['email'];?></a></div><?php } ?>
 <?php if(!empty($tenant['phone'])) {?>
-            <div class="sport-base__manage-phone"><span class="sport-base__ico sport-base__ico-phone"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="sport-base__manage-phone"><svg class="sport-base__ico sport-base__ico-phone" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M22.0004 16.92V19.92C22.0016 20.1985 21.9445 20.4742 21.8329 20.7294C21.7214 20.9845 21.5577 21.2136 21.3525 21.4019C21.1473 21.5901 20.905 21.7335 20.6412 21.8227C20.3773 21.9119 20.0978 21.9451 19.8204 21.92C16.7433 21.5856 13.7874 20.5342 11.1904 18.85C8.77425 17.3147 6.72576 15.2662 5.19042 12.85C3.5004 10.2412 2.44866 7.271 2.12042 4.18001C2.09543 3.90347 2.1283 3.62477 2.21692 3.36163C2.30555 3.09849 2.44799 2.85669 2.63519 2.65163C2.82238 2.44656 3.05023 2.28271 3.30421 2.17053C3.5582 2.05834 3.83276 2.00027 4.11042 2.00001H7.11042C7.59573 1.99523 8.06621 2.16708 8.43418 2.48354C8.80215 2.79999 9.0425 3.23945 9.11042 3.72001C9.23704 4.68007 9.47187 5.62273 9.81042 6.53001C9.94497 6.88793 9.97408 7.27692 9.89433 7.65089C9.81457 8.02485 9.62928 8.36812 9.36042 8.64001L8.09042 9.91001C9.51398 12.4136 11.5869 14.4865 14.0904 15.91L15.3604 14.64C15.6323 14.3711 15.9756 14.1859 16.3495 14.1061C16.7235 14.0263 17.1125 14.0555 17.4704 14.19C18.3777 14.5286 19.3204 14.7634 20.2804 14.89C20.7662 14.9585 21.2098 15.2032 21.527 15.5775C21.8441 15.9518 22.0126 16.4296 22.0004 16.92Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-</span> <a href="tel:<?php echo str_replace(' ','',$tenant['phone']);?>"><?php echo $tenant['phone'];?></a></div>
+ <a href="tel:<?php echo str_replace(' ','',$tenant['phone']);?>"><?php echo $tenant['phone'];?></a></div>
 <?php } ?>
         </div>
         <?php if(!empty($tenant['url'])) {?>
-        <a href="<?php echo fix_url($tenant['url']);?>" target="_blank" rel="nofollow" class="sport-base__manager-www"><?php _e('Aplankykite interneto svetainę', 'sr');?><span class="sport-base__ico sport-base__ico-external"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <a href="<?php echo fix_url($tenant['url']);?>" target="_blank" rel="nofollow" class="sport-base__manager-www"><?php _e('Aplankykite interneto svetainę', 'sr');?><svg class="sport-base__ico sport-base__ico-external" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7 7H17V17" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M7 17L17 7" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-</span></a>
+                            </svg></a>
         <?php } ?>
         <div class="sport-base__manager-map-wrapper"><div id="sport-base__manager-map" class="sport-base__manager-map"></div></div>
 
