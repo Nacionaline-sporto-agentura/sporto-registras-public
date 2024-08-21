@@ -6,7 +6,7 @@ if(empty($args['data'])) {
 $address = SR_Table::format_address($args['data']['address']);
 
 $sportTypes = [];
-if(isset($args['data']['publicSpaces'])){
+if(isset($args['data']['publicSpaces'])) {
     foreach($args['data']['publicSpaces'] as $publicSpaces) {
         foreach($publicSpaces['sportTypes'] as $sportType) {
             $sportTypes[] = $sportType['name'];
@@ -16,7 +16,7 @@ if(isset($args['data']['publicSpaces'])){
 $photos = '';
 $photos_count = 0;
 foreach($args['data']['photos'] as $photo) {
-    if(empty($photo['public'])) { //!
+    if(empty($photo['public'])) {
         $photos .= '<div class="sport-base__photo" title="' . $photo['description'] . '" style="background-image:url('.$photo['url'].');"></div>';
         $photos_count++;
     }
