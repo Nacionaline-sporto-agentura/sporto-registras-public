@@ -18,11 +18,10 @@ class BEA_Settings
                 __('Sporto registras', 'bea'),
                 'manage_options',
                 $this->bea_slug,
-                [$this,'settings'],
+                [$this,'admin_page'], 
                 bea('lib')->svg_sprite(BEA_DIR.'assets/img/sr.svg'),
                 6
             );
-
             $this->hook = add_submenu_page(
                 $this->bea_slug,
                 __('Nustatymai', 'bea'),
@@ -36,11 +35,20 @@ class BEA_Settings
             
         }
     }
-
+    public function admin_page(){
+        if (!current_user_can('manage_options')) {
+            wp_die(
+                '<h1>' . __('Jums reikia aukštesnio lygio leidimo.', 'bea') . '</h1>' .
+                '<p>' . __('Atsiprašome, jums neleidžiama keisti sporto registro nustatymų.', 'bea') . '</p>',
+                403
+            );
+        }
+        include_once BEA_DIR . '/partials/admin-page.php';
+    }
     public function bulk_actions()
     {
         global $wpdb;
-
+        
         $screen = get_current_screen();
         if(!is_object($screen) || $screen->id != $this->hook) {
             return;
@@ -53,9 +61,11 @@ class BEA_Settings
                 403
             );
         }
-
+        
+        
         if (!empty($_POST) && check_admin_referer('update', 'sr_settings_field')) {
             bea('notifications')->notice( __('Nustatymai sėkmingai išsaugoti.','bea'), 'success', true );
+
             update_option('sr_settings', $_POST['sr_settings']);
             $redirect = 'admin.php?page=sr-admin-settings';
           
@@ -77,13 +87,12 @@ class BEA_Settings
                 403
             );
         }
-        $messages = [];
         if (!isset($wp_roles)) {
             $wp_roles = new WP_Roles();
         }
         $roles = $wp_roles->get_names();
         $pages = get_pages();
         $settings = get_option('sr_settings', []);
-        include_once BEA_DIR . '/partials/settings/settings.php';
+       include_once BEA_DIR . '/partials/settings/settings.php';
     }
 }

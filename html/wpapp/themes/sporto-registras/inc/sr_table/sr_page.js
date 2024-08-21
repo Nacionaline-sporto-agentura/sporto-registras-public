@@ -31,6 +31,8 @@
                     slide.style.transition = '';
                     slide.style.transform = '';
                 });
+                this.track.style.transition = '';
+                this.track.style.transform = '';
             }
         },
         init: function () {

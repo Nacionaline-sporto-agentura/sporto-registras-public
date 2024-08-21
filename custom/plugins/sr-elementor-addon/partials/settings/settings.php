@@ -13,7 +13,7 @@
 <?php
 $args = array(
     'name'             => 'sr_settings[sport_bases_page_id]',
-    'selected'         => (isset($settings['sport_bases_page_id']) && intval($settings['sport_bases_page_id'])) ? intval($settings['sport_bases_page_id']) : 0,
+    'selected'         => (isset($settings['sport_bases_page_id'])) ? intval($settings['sport_bases_page_id']) : '',
     'show_option_none' => __('Prašome nurodyti sporto bazės vidinio puslapio nuorodą', 'bea'),
     'class'            => 'p-form-control',
     'id'               => 'sr_settings_sport_bases_page_id'
@@ -29,7 +29,7 @@ wp_dropdown_pages($args);
 <?php
 $args = array(
     'name'             => 'sr_settings[sport_organization_page_id]',
-    'selected'         => (isset($settings['sport_organization_page_id']) && intval($settings['sport_organization_page_id'])) ? intval($settings['sport_organization_page_id']) : 0,
+    'selected'         => (isset($settings['sport_organization_page_id'])) ? intval($settings['sport_organization_page_id']) : '',
     'show_option_none' => __('Prašome nurodyti sporto organizacijos vidinio puslapio nuorodą', 'bea'),
     'class'            => 'p-form-control',
     'id'               => 'sr_settings_sport_organization_page_id'

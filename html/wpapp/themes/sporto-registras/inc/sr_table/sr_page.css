@@ -81,12 +81,12 @@
 
 }
 
-.sport-base__photos__count-5 div:first-child,
-.sport-base__photos__count-4 div:first-child {
+.sport-base__photos__count-5 a:first-child,
+.sport-base__photos__count-4 a:first-child {
     grid-row: span 2;
 }
 
-.sport-base__photos__count-4 div:last-child {
+.sport-base__photos__count-4 a:last-child {
     grid-column: span 2;
 }
 .sport-base__photos_navigation{
