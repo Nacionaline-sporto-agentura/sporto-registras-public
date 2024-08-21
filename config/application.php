@@ -63,6 +63,8 @@ Config::define('MINIO_ENDPOINT', env('MINIO_ENDPOINT'));
 Config::define('BUCKET_URL', env('BUCKET_URL'));
 Config::define('MINIO_USESSL', env('MINIO_USESSL') == 'true');
 Config::define('SPORT_REGISTER_API_URL', env('SPORT_REGISTER_API_URL'));
+Config::define('SPORT_REGISTER_MAP_URL', env('SPORT_REGISTER_MAP_URL'));
+
 
 
 /**

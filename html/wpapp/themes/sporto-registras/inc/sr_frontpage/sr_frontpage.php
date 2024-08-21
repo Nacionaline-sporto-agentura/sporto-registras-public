@@ -65,7 +65,7 @@ class SR_Frontpage
 
 
         wp_localize_script('sr-frontpage-js', 'sr_map_config', array(
-            'api' => ['url' => SPORT_REGISTER_API_URL],
+            'api' => ['url' => SPORT_REGISTER_MAP_URL],
             'coordinates' => explode(',', $atts['coordinates']),
             'zoom' => (int)$atts['zoom'],
             'add_layer' => $atts['add_layer'] === 'true' ? 'true' : 'false',
