@@ -27,6 +27,8 @@
         },
         $tables: {
             'sportsbases': {
+                searching: false,
+                filters: {},
                 url: sr_table_vars.REST_URL + 'sport-register/v1/sportbases',
                 columns : [
                     {
@@ -53,7 +55,7 @@
                         orderable: true,
                         searchable: true,
                         render: function (data, type, row) {
-                            return row.municipality != null ? row.municipality.name !=null ? row.municipality.name : row.municipality: '-';                                                 
+                            return row.municipality?.name ?? '-';                                                
                         }
                     },
                     {
@@ -63,9 +65,7 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            return row.sportTypes.map(function (sportType) {
-                                return sportType.name;
-                            }).join(', ');
+                            return row.sportTypes.map(sportType => sportType.name).join(', ') || '-';
                         }
                     },
                     {
@@ -80,7 +80,7 @@
                         data: null,
                         name: 'tenant.name',
                         render: function (data, type, row) {
-                            return row.tenant.name ?? '-';
+                            return row.tenant?.name ?? '-';
                         },
                         orderable: true,
                         searchable: true
@@ -91,84 +91,86 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            console.log(row);
-                            return '<a class="read-more" href="' + sr_table_vars.SPORT_BASE_URL + row.id + (row.name != null ? '/'+row.name.slugifyTitle(): '')+'">' + sr_table_vars.I18N.READ_MORE + '</a>';
+                            const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
+                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${sr_table_vars.I18N.READ_MORE}</a>`;
                         }
                     }
                 ],
-                columnDefs: [
-                    // {
-                    //     targets: 1,
-                    //     render: function (data, type, row) {
-                    //         return '<a href="' + row.webPage + '">' + data + '</a>';
-                    //     }
-                    // }
-                ]
-            },
-            'organizations': {
-                url: sr_table_vars.REST_URL + 'sport-register/v1/organizations',
-                columns : [
-                    {
-                        title: 'Sporto organizacijos pavadinimas',
-                        name: 'name',
-                        data: null,
-                        render: function (data, type, row) {
-                            return row.name ?? '-';
-                        }
-                    },
-                    {
-                        title: 'Tipas',
-                        data: null,
-                        name: 'type',
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            return row.type !=null ? row.type.name : '-';
-                        }
-                    },
-                    {
-                        title: 'Adresas',
-                        data: null,
-                        name: 'address',
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            return row.address !=null ? row.address : '-';
-                        }
-                    },
-                    {
-                        title: 'Veiksmas',
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            if (row.name == null){
-                                return '-';
-                            }else{
-                                return '<a class="read-more" href="' + sr_table_vars.SPORT_BASE_URL + row.id + (row.name != null ? '/'+row.name.slugifyTitle(): '')+'">' + sr_table_vars.I18N.READ_MORE + '</a>';
+                columnDefs: [],
+                initFilters: function() {
+                    $('#filter_sportbase_name').on('keyup', function() {
+                        sr_table.$tables['sportsbases'].applyFilters();
+                    });
+                    $('.filter-checkbox, #filter_sportbase_accessility').on('change', function() {
+                        sr_table.$tables['sportsbases'].applyFilters();
+                    });
+                    $('#clearFilters').on('click', function() {
+                        sr_table.$tables['sportsbases'].clearFilters();
+                    });
+
+                    $('.dropdown-toggle').on('click', function() {
+                        var dropdown = $(this).closest('.dropdown');
+                        dropdown.toggleClass('active');
+                    });
+                    
+                    $('.filter-checkbox').on('change', function() {
+                        var dropdown = $(this).closest('.dropdown');
+                        sr_table.$tables['sportsbases'].updateSelectedCount(dropdown);
+                    });
+                    $(window).on('click', function(e) {
+                        $('.dropdown').each(function() {
+                            if (!$(this).is(e.target) && $(this).has(e.target).length === 0) {
+                                $(this).removeClass('active');
                             }
-                        }
-                    }
-                ],
-                columnDefs: [
-                    // {
-                    //     targets: 1,
-                    //     render: function (data, type, row) {
-                    //         return '<a href="' + row.webPage + '">' + data + '</a>';
-                    //     }
-                    // }
-                ]
+                        });
+                    });
+                },
+                applyFilters: function() {
+                    var filter_sportbase_name = $('#filter_sportbase_name').val().toLowerCase();
+                    var filter_sportbase_type = $('#filter_sportbase_type_form input:checked').map(function() {
+                        return this.value;
+                    }).get().join('|');
+                    var filter_sportbase_sport = $('#filter_sportbase_sport_form input:checked').map(function() {
+                        return this.value;
+                    }).get().join('|');
+                    var filter_sportbase_municipality = $('#filter_sportbase_municipality_form input:checked').map(function() {
+                        return this.value;
+                    }).get().join('|');
+                    var filter_sportbase_accessility = $('#filter_sportbase_accessility').is(':checked') ? 1 : '';
+                    
+                    sr_table.$tables['sportsbases'].filters = {
+                        name: filter_sportbase_name,
+                        type: filter_sportbase_type,
+                        sport: filter_sportbase_sport,
+                        municipality: filter_sportbase_municipality,
+                        accessibility: filter_sportbase_accessility
+                    };
+                    sr_table.$table.draw();
+                },
+                updateSelectedCount: function(dropdown) {
+                    var selectedCount = dropdown.find('.filter-checkbox:checked').length;
+                    dropdown.find('.selected-count').text(selectedCount > 0 ? `+${selectedCount}` : '');
+                },
+                clearFilters: function() {
+                    $('#filter_sportbase_name').val('');
+                    $('.filter-checkbox, #filter_sportbase_accessility').prop('checked', false);
+                    $('.selected-count').text('');
+                    sr_table.$tables['sportsbases'].filters = {};
+                    sr_table.$table.search('').columns().search('').draw();
+                },
+                serverSide: true
             },
             'sportpersons': {
                 url: sr_table_vars.REST_URL + 'sport-register/v1/sportpersons',
+                searching: false,
+                filters: {},
                 columns : [
                     {
                         title: 'Sporto šaka',
+                        data: 'sportTypeName',
                         name: 'sportTypeName',
-                        data: null,
-                        render: function (data, type, row) {
-                            return row.sportTypeName ?? '-';
-                        }
+                        orderable: true,
+                        searchable: true,
                     },
                     {
                         title: 'Treneriai',
@@ -220,11 +222,170 @@
                     }
                 ],
                 columnDefs: [],
-                serverSide: false
-            }
+                initFilters: function() {
+                    $('.filter-checkbox').on('change', function() {
+                        sr_table.$tables['sportpersons'].applyFilters();
+                    });
+                    $('#clearFilters').on('click', function() {
+                        sr_table.$tables['sportpersons'].clearFilters();
+                    });
+
+                    $('.dropdown-toggle').on('click', function() {
+                        var dropdown = $(this).closest('.dropdown');
+                        dropdown.toggleClass('active');
+                    });
+                    
+                    $('.filter-checkbox').on('change', function() {
+                        var dropdown = $(this).closest('.dropdown');
+                        sr_table.$tables['sportpersons'].updateSelectedCount(dropdown);
+                    });
+                    $(window).on('click', function(e) {
+                        $('.dropdown').each(function() {
+                            if (!$(this).is(e.target) && $(this).has(e.target).length === 0) {
+                                $(this).removeClass('active');
+                            }
+                        });
+                    });
+                },
+                applyFilters: function() {
+                    var filter_sportpersons_sport = $('#filter_sportpersons_sport_form input:checked').map(function() {
+                        return this.value;
+                    }).get().join('|');
+
+                    sr_table.$tables['sportpersons'].filters = {
+                        sport: filter_sportpersons_sport
+                    };
+                    sr_table.$table.draw();
+                },             
+                updateSelectedCount: function(dropdown) {
+                    var selectedCount = dropdown.find('.filter-checkbox:checked').length;
+                    dropdown.find('.selected-count').text(selectedCount > 0 ? `+${selectedCount}` : '');
+                },
+                clearFilters: function() {
+                    $('.filter-checkbox').prop('checked', false);
+                    $('.selected-count').text('');
+                    sr_table.$table.search('').columns().search('').draw();
+                },
+                serverSide: true
+            },
+            'organizations': {
+                url: sr_table_vars.REST_URL + 'sport-register/v1/organizations',
+                searching: false,
+                filters: {},
+                columns : [
+                    {
+                        title: 'Sporto organizacijos pavadinimas',
+                        name: 'name',
+                        data: null,
+                        render: function (data, type, row) {
+                            return row.name ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Tipas',
+                        data: null,
+                        name: 'type',
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return row.type?.name ?? '-';
+                        }
+                    },
+                    {
+                        title: 'Adresas',
+                        data: null,
+                        name: 'address',
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return row.address !=null ? row.address : '-';
+                        }
+                    },
+                    {
+                        title: 'Veiksmas',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            if (!row.name) {
+                                return '-';
+                            }
+                            const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
+                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${sr_table_vars.I18N.READ_MORE}</a>`;
+                        }
+                    }
+                ],
+                columnDefs: [],
+                initFilters: function() {
+                    $('#filter_organization_name').on('keyup', function() {
+                        sr_table.$tables['organizations'].applyFilters();
+                    });
+                    $('.filter-checkbox, #filter_organization_support, #filter_organization_nvo, #filter_organization_nvs').on('change', function() {
+                        sr_table.$tables['organizations'].applyFilters();
+                    });
+                    $('#clearFilters').on('click', function() {
+                        sr_table.$tables['organizations'].clearFilters();
+                    });
+
+                    $('.dropdown-toggle').on('click', function() {
+                        var dropdown = $(this).closest('.dropdown');
+                        dropdown.toggleClass('active');
+                    });
+                    
+                    $('.filter-checkbox').on('change', function() {
+                        var dropdown = $(this).closest('.dropdown');
+                        sr_table.$tables['organizations'].updateSelectedCount(dropdown);
+                    });
+                    $(window).on('click', function(e) {
+                        $('.dropdown').each(function() {
+                            if (!$(this).is(e.target) && $(this).has(e.target).length === 0) {
+                                $(this).removeClass('active');
+                            }
+                        });
+                    });
+                },
+                applyFilters: function() {
+                    var filter_organization_name = $('#filter_organization_name').val().toLowerCase();
+                    var filter_organization_type = $('#filter_organization_type_form input:checked').map(function() {
+                        return this.value;
+                    }).get().join('|');
+                    var filter_organization_sport = $('#filter_organization_sport_form input:checked').map(function() {
+                        return this.value;
+                    }).get().join('|');
+                    var filter_organization_nvo = $('#filter_organization_nvo').is(':checked') ? 1 : '';
+                    var filter_organization_nvs = $('#filter_organization_nvs').is(':checked') ? 1 : '';
+                    var filter_organization_support = $('#filter_organization_support').is(':checked') ? 1 : '';
+                    
+                    sr_table.$tables['organizations'].filters = {
+                        name: filter_organization_name,
+                        type: filter_organization_type,
+                        sport: filter_organization_sport,
+                        nvo: filter_organization_nvo,
+                        nvs: filter_organization_nvs,
+                        support: filter_organization_support
+                    };
+                    sr_table.$table.draw();
+                },
+                updateSelectedCount: function(dropdown) {
+                    var selectedCount = dropdown.find('.filter-checkbox:checked').length;
+                    dropdown.find('.selected-count').text(selectedCount > 0 ? `+${selectedCount}` : '');
+                },
+                clearFilters: function() {
+                    $('#filter_organization_name').val('');
+                    $('.filter-checkbox, #filter_organization_support, #filter_organization_nvo, #filter_organization_nvs').prop('checked', false);
+                    $('.selected-count').text('');
+                    sr_table.$tables['organizations'].filters = {};
+                    sr_table.$table.search('').columns().search('').draw();
+                },
+                serverSide: true
+            },
         },
         createDataTable: function (config) {
-            this.$table.DataTable({
+            
+            sr_table.$table = $('#'+sr_table_vars.TABLE_ID).DataTable({
+                searching: config.searching,
+                lengthChange: false,
+                info: false,
                 processing: config.processing !== undefined ? config.processing : true,
                 serverSide: config.serverSide !== undefined ? config.serverSide : true,
                 deferRender: config.deferRender !== undefined ? config.deferRender : true,
@@ -232,12 +393,15 @@
                 ajax: {
                     url: config.url,
                     dataSrc: 'data',
-                    data: config.serverSide ? function (d) {
+                    data: function (d) {
                         d.page = Math.ceil(d.start / d.length) + 1;
                         d.pageSize = d.length;
                         d.sort = d.order[0].dir === 'asc' ? d.columns[d.order[0].column].data : '-' + d.columns[d.order[0].column].data;
-                        d.search = d.search.value;
-                    }: undefined,
+
+                        config.filters && Object.keys(config.filters).forEach(function (key) {
+                            d[key] = config.filters[key];
+                        });
+                    },
                     error: function (xhr, error, code) {
                         console.error("Ajax request failed:", error, code);
                     }
@@ -262,9 +426,9 @@
                 dom: '<"top"<"biip_table_header">Bf>rt<"bottom"ip>',
                 responsive: true,
             });
+            config.initFilters();
         },
         init: function () {
-            this.$table = $('#'+sr_table_vars.TABLE_ID);
             this.createDataTable(this.$tables[sr_table_vars.TABLE_ID]);
         },
     };

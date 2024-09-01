@@ -8,6 +8,7 @@ class SR_Table
     private $organization_page;
     public function __construct()
     {
+
         $settings = get_option('sr_settings', []);
         $this->sport_base_page = $settings['sport_bases_page_id'] ?? 0;
         $this->organization_page = $settings['sport_organization_page_id'] ?? 0;
@@ -143,11 +144,44 @@ class SR_Table
     public function sport_persons_list(WP_REST_Request $request)
     {
         $params = $request->get_query_params();
-        $sr = $this->_request('/sportsPersons/count/public'); //neveikia
+
+
+        $sport = isset($params['sport']) ? $params['sport'] : '';
+        $sr = $this->_request('/sportsPersons/count/public');
+        $rows = $sr->data['rows'] ?? [];
+        $totalRecords = $sr->data['total'] ?? 0;
+
+        if(!$fake_data = get_transient('fake_data_sportpersons') && (isset($_GET['debug']) && $_GET['debug'] == 'true')) {
+            include SR_THEME_DIR . '/inc/sr_table/fake_data.php';
+            $fake_data = renderSportPersonsDataset(100);
+            set_transient('fake_data_sportpersons', $fake_data, 60 * 60);
+        }
+
+        if (isset($sport) && !empty($sport)) {
+            // If there's only one sport to filter
+            if (strpos($sport, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($sport) {
+                    // Check if sportTypeName matches the search term
+                    return $item['sportTypeName'] === $sport;
+                });
+            } else {
+                // If there are multiple sports to filter
+                $sports = explode('|', $sport);
+                $fake_data = array_filter($fake_data, function ($item) use ($sports) {
+                    // Check if sportTypeName is in the list of sports
+                    return in_array($item['sportTypeName'], $sports);
+                });
+            }
+        }
+
+
+        $rows = array_values($fake_data);
+        $totalRecords = count($fake_data);
+
         $data = (object) [];
-        $data->recordsTotal = $sr->data['total'] ?? 0;
-        $data->recordsFiltered = $sr->data['total'] ?? 0;
-        $data->data = $sr->data;
+        $data->recordsTotal = $totalRecords ?? 0;
+        $data->recordsFiltered = $totalRecords ?? 0;
+        $data->data = $rows;
         $data->draw = isset($params['draw']) ? intval($params['draw']) : 0;
 
         return new WP_REST_Response($data, 200);
@@ -162,6 +196,12 @@ class SR_Table
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'id';
 
+        $accessibility = isset($params['accessibility']) ? $params['accessibility'] : '';
+        $sport = isset($params['sport']) ? $params['sport'] : '';
+        $municipality = isset($params['municipality']) ? $params['municipality'] : '';
+        $name = isset($params['name']) ? $params['name'] : '';
+        $type = isset($params['type']) ? $params['type'] : '';
+
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
@@ -172,10 +212,89 @@ class SR_Table
         $query = !empty($query) ? '?' . $query : '';
         $sr = $this->_request('/sportsBases/public' . $query);
 
+        $rows = $sr->data['rows'] ?? [];
+        $totalRecords = $sr->data['total'] ?? 0;
+
+        // cache fake data for 1 hour
+        if(!$fake_data = get_transient('fake_data_sportsbases') && (isset($_GET['debug']) && $_GET['debug'] == 'true')) {
+            include SR_THEME_DIR . '/inc/sr_table/fake_data.php';
+            $fake_data = renderSportbasesDataset(100);
+            set_transient('fake_data_sportsbases', $fake_data, 60 * 60);
+        }
+
+        if(isset($sport) && !empty($sport)) {
+            if(strpos($sport, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($sport) {
+                    return in_array($sport, array_column($item['sportTypes'], 'name'));
+                });
+            } else {
+                $sports = explode('|', $sport);
+                $fake_data = array_filter($fake_data, function ($item) use ($sports) {
+                    foreach ($sports as $s) {
+                        if (!in_array($s, array_column($item['sportTypes'], 'name'))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+        }
+
+        if (isset($municipality) && !empty($municipality)) {
+            if (strpos($municipality, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($municipality) {
+                    return strpos($item['municipality']['name'], $municipality) !== false;
+                });
+            } else {
+                $municipalities = explode('|', $municipality);
+                $fake_data = array_filter($fake_data, function ($item) use ($municipalities) {
+                    foreach ($municipalities as $m) {
+                        if (strpos($item['municipality']['name'], $m) !== false) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
+        }
+
+        if (isset($type) && !empty($type)) {
+            if (strpos($type, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($type) {
+                    return strpos($item['type']['name'], $type) !== false;
+                });
+            } else {
+                $types = explode('|', $type);
+                $fake_data = array_filter($fake_data, function ($item) use ($types) {
+                    foreach ($types as $t) {
+                        if (strpos($item['type']['name'], $t) !== false) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
+        }
+
+        if(isset($accessibility) && $accessibility == 1) {
+            $fake_data = array_filter($fake_data, function ($item) {
+                return $item['accessibility'] == 1;
+            });
+        }
+
+        if(isset($name) && !empty($name)) {
+            $fake_data = array_filter($fake_data, function ($item) use ($name) {
+                return stripos($item['name'], $name) !== false;
+            });
+        }
+
+        $rows = array_slice($fake_data, $start, 10);
+        $totalRecords = count($fake_data);
+
         $data = (object) [];
-        $data->recordsTotal = $sr->data['total'] ?? 0;
-        $data->recordsFiltered = $sr->data['total'] ?? 0;
-        $data->data = $sr->data['rows'];
+        $data->recordsTotal = $totalRecords ?? 0;
+        $data->recordsFiltered = $totalRecords ?? 0;
+        $data->data = $rows;
         $data->draw = isset($params['draw']) ? intval($params['draw']) : 0;
         return new WP_REST_Response($data, 200);
     }
@@ -190,19 +309,117 @@ class SR_Table
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
 
 
+        $name = isset($params['name']) ? $params['name'] : '';
+        $type = isset($params['type']) ? $params['type'] : '';
+        $sport = isset($params['sport']) ? $params['sport'] : '';
+        $support = isset($params['support']) ? $params['support'] : '';
+        $nvo = isset($params['nvo']) ? $params['nvo'] : '';
+        $nvs = isset($params['nvs']) ? $params['nvs'] : '';
+
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
             'query[name]' => $search,
+            'sort' => ($order == 'asc' ? '' : '-').$orderColumn,
         );
+
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
         $sr = $this->_request('/tenants/organizations/public' . $query);
+        $rows = $sr->data['rows'] ?? [];
+        $totalRecords = $sr->data['total'] ?? 0;
+
+        // cache fake data for 1 hour
+        if(!$fake_data = get_transient('fake_data_organizations') && (isset($_GET['debug']) && $_GET['debug'] == 'true')) {
+            include SR_THEME_DIR . '/inc/sr_table/fake_data.php';
+            $fake_data = renderOrganizationsDataset(100);
+            set_transient('fake_data_organizations', $fake_data, 60 * 60);
+        }
+
+        if(isset($sport) && !empty($sport)) {
+            if(strpos($sport, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($sport) {
+                    return in_array($sport, array_column($item['sports'], 'name'));
+                });
+            } else {
+                $sports = explode('|', $sport);
+                $fake_data = array_filter($fake_data, function ($item) use ($sports) {
+                    foreach ($sports as $s) {
+                        if (!in_array($s, array_column($item['sports'], 'name'))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+        }
+
+        if (isset($municipality) && !empty($municipality)) {
+            if (strpos($municipality, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($municipality) {
+                    return strpos($item['address'], $municipality) !== false;
+                });
+            } else {
+                $municipalities = explode('|', $municipality);
+                $fake_data = array_filter($fake_data, function ($item) use ($municipalities) {
+                    foreach ($municipalities as $m) {
+                        if (strpos($item['address'], $m) !== false) {
+                            return true; // Bent viena savivaldybė atitinka
+                        }
+                    }
+                    return false; // Jei jokios savivaldybės neatitinka
+                });
+            }
+        }
+
+        if (isset($type) && !empty($type)) {
+            if (strpos($type, '|') === false) {
+                $fake_data = array_filter($fake_data, function ($item) use ($type) {
+                    return strpos($item['type']['name'], $type) !== false;
+                });
+            } else {
+                $types = explode('|', $type);
+                $fake_data = array_filter($fake_data, function ($item) use ($types) {
+                    foreach ($types as $t) {
+                        if (strpos($item['type']['name'], $t) !== false) {
+                            return true; // Bent viena rūšis atitinka
+                        }
+                    }
+                    return false; // Jei jokios rūšies neatitinka
+                });
+            }
+        }
+
+        if(isset($support) && $support == 1) {
+            $fake_data = array_filter($fake_data, function ($item) {
+                return $item['support'] == 1;
+            });
+        }
+        if(isset($nvo) && $nvo == 1) {
+            $fake_data = array_filter($fake_data, function ($item) {
+                return $item['nvo'] == 1;
+            });
+        }
+        if(isset($nvs) && $nvs == 1) {
+            $fake_data = array_filter($fake_data, function ($item) {
+                return $item['nvs'] == 1;
+            });
+        }
+
+        if(isset($name) && !empty($name)) {
+            $fake_data = array_filter($fake_data, function ($item) use ($name) {
+                return stripos($item['name'], $name) !== false;
+            });
+        }
+
+        $rows = array_slice($fake_data, $start, 10);
+        $totalRecords = count($fake_data);
+
 
         $data = (object) [];
-        $data->recordsTotal = $sr->data['total'] ?? 0;
-        $data->recordsFiltered = $sr->data['total'] ?? 0;
-        $data->data = $sr->data['rows'];
+        $data->recordsTotal = $totalRecords ?? 0;
+        $data->recordsFiltered = $totalRecords ?? 0;
+        $data->data = $rows;
         $data->draw = isset($params['draw']) ? intval($params['draw']) : 0;
         return new WP_REST_Response($data, 200);
     }
@@ -250,8 +467,242 @@ class SR_Table
                 ]
             )
         );
+        $filter = '';
+        if($atts['id'] == 'sportsbases') {
+            $filter = '<div id="filters">
+  <div class="search-container"> 
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    
+    <input type="text" id="filter_sportbase_name" class="search-field" placeholder="'.__('Ieškoti pagal pavadinimą', 'sr').'" value="">
+  </div>
 
-        return '<div class="sr-table ' . $atts['class'] . '"><table id="' . $atts['id'] . '"></table></div>';
+  <div class="dropdown">
+    <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+      <div id="filter_sportbase_type" class="filter-dropdown-toogle">Sporto bazės rūšis</div>
+      <span class="selected-count"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <nav class="dropdown-menu" aria-labelledby="dropdownToggle">
+      <form id="filter_sportbase_type_form" method="get">
+        '.$this->getSportbaseTypes().'
+      </form>
+    </nav>
+  </div>
+
+  <div class="dropdown">
+    <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+      <div id="filter_sportbase_sport"  class="filter-dropdown-toogle">Sporto šaka</div>
+      <span class="selected-count"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <nav class="dropdown-menu" aria-labelledby="dropdownToggle">
+      <form id="filter_sportbase_sport_form" method="get">
+        '.$this->getSports().'
+      </form>
+    </nav>
+  </div>
+
+  <div class="dropdown">
+    <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+      <div id="filter_sportbase_municipality"  class="filter-dropdown-toogle">Savivaldybė</div>
+      <span class="selected-count"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <nav class="dropdown-menu" aria-labelledby="dropdownToggle">
+      <form id="filter_sportbase_municipality_form" method="get">
+        '.$this->getMunicipalities().'
+      </form>
+    </nav>
+  </div>
+
+  <div class="checkbox-container">
+    <input type="checkbox" id="filter_sportbase_accessility" name="filter_sportbase_accessility" class="custom-checkbox" value="1">
+    <label for="filter_sportbase_accessility" class="custom-label">'.__('Pritaikyta negalią turintiems asmenims', 'sr').'</label>
+  </div>
+
+  <button id="clearFilters">'.__('Išvalyti', 'sr').'</button>
+</div>';
+        } elseif($atts['id'] == 'organizations') {
+            $filter = '<div id="filters">
+  <div class="search-container"> 
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    
+    <input type="text" id="filter_organization_name" class="search-field" placeholder="'.__('Ieškoti pagal pavadinimą', 'sr').'" value="">
+  </div>
+
+  <div class="dropdown">
+    <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+      <div id="filter_organization_type" class="filter-dropdown-toogle">'.__('Sporto bazės rūšis', 'sr').'</div>
+      <span class="selected-count"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <nav class="dropdown-menu" aria-labelledby="dropdownToggle">
+      <form id="filter_organization_type_form" method="get">
+        '.$this->getOrganizationTypes().'
+      </form>
+    </nav>
+  </div>
+
+  <div class="dropdown">
+    <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+      <div id="filter_organization_sport"  class="filter-dropdown-toogle">'.__('Sporto šaka', 'sr').'</div>
+      <span class="selected-count"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <nav class="dropdown-menu" aria-labelledby="dropdownToggle">
+      <form id="filter_organization_sport_form" method="get">
+        '.$this->getSports().'
+      </form>
+    </nav>
+  </div>
+
+  <div class="checkbox-container">
+    <input type="checkbox" id="filter_organization_support" name="filter_organization_support" class="custom-checkbox" value="1">
+    <label for="filter_organization_support" class="custom-label">'.__('Paramos gavėjas', 'sr').'</label>
+  </div>
+
+  <div class="checkbox-container">
+    <input type="checkbox" id="filter_organization_nvo" name="filter_organization_nvo" class="custom-checkbox" value="1">
+    <label for="filter_organization_nvo" class="custom-label">'.__('Atitinka NVO reikalavimus', 'sr').'</label>
+  </div>
+
+  <div class="checkbox-container">
+    <input type="checkbox" id="filter_organization_nvs" name="filter_organization_nvs" class="custom-checkbox" value="1">
+    <label for="filter_organization_nvs" class="custom-label">'.__('Akredituota NVŠ programa', 'sr').'</label>
+  </div>
+
+  <button id="clearFilters">'.__('Išvalyti', 'sr').'</button>
+</div>';
+        } elseif($atts['id'] == 'sportpersons') {
+            $filter = '<div class="desc">
+'.__('*AMS - Aukšto meistriškumo sporto,   *FA - Fizinio aktyvumo', 'sr').'
+</div><div id="filters">
+  <div class="dropdown">
+    <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+      <div id="filter_sportpersons_sport"  class="filter-dropdown-toogle">'.__('Sporto šaka', 'sr').'</div>
+      <span class="selected-count"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <nav class="dropdown-menu" aria-labelledby="dropdownToggle">
+      <form id="filter_sportpersons_sport_form" method="get">
+        '.$this->getSports().'
+      </form>
+    </nav>
+  </div><button id="clearFilters">'.__('Išvalyti', 'sr').'</button>
+</div>';
+        }
+
+        return $filter.'<div class="table-responsive sr-table ' . $atts['class'] . '"><table id="' . $atts['id'] . '"></table></div>';
+    }
+    private function getSports()
+    {
+        $sports = ['Krepšinis', 'Futbolas', 'Plaukimas', 'Tenisas', 'Lengvoji atletika', 'Golfas', 'Volejbolas'];
+        $html = '';
+        foreach($sports as $sport) {
+            $html .= '<label class="filter-label">
+          <input type="checkbox" name="filter_sportbase_sport" value="'.$sport.'" class="filter-checkbox">
+          '.$sport.'
+        </label>';
+        }
+        return $html;
+    }
+    private function getMunicipalities()
+    {
+        $municipalities = [
+          "Alytaus m. sav.",
+          "Alytaus r. sav.",
+          "Anykščių r. sav.",
+          "Birštono sav.",
+          "Biržų r. sav.",
+          "Druskininkų sav.",
+          "Elektrėnų sav.",
+          "Ignalinos r. sav.",
+          "Jonavos r. sav.",
+          "Joniškio r. sav.",
+          "Jurbarko r. sav.",
+          "Kaišiadorių r. sav.",
+          "Kalvarijos sav.",
+          "Kauno m. sav.",
+          "Kauno r. sav.",
+          "Kazlų Rūdos sav.",
+          "Kėdainių r. sav.",
+          "Kelmės r. sav.",
+          "Klaipėdos m. sav.",
+          "Klaipėdos r. sav.",
+          "Kretingos r. sav.",
+          "Kupiškio r. sav.",
+          "Lazdijų r. sav.",
+          "Marijampolės sav.",
+          "Mažeikių r. sav.",
+          "Molėtų r. sav.",
+          "Neringos sav.",
+          "Pagėgių sav.",
+          "Pakruojo r. sav.",
+          "Palangos m. sav.",
+          "Panevėžio m. sav.",
+          "Panevėžio r. sav.",
+          "Pasvalio r. sav.",
+          "Plungės r. sav.",
+          "Prienų r. sav.",
+          "Radviliškio r. sav.",
+          "Raseinių r. sav.",
+          "Rietavo sav.",
+          "Rokiškio r. sav.",
+          "Skuodo r. sav.",
+          "Šakių r. sav.",
+          "Šalčininkų r. sav.",
+          "Šiaulių m. sav.",
+          "Šiaulių r. sav.",
+          "Šilalės r. sav.",
+          "Šilutės r. sav.",
+          "Širvintų r. sav.",
+          "Švenčionių r. sav.",
+          "Tauragės r. sav.",
+          "Telšių r. sav.",
+          "Trakų r. sav.",
+          "Ukmergės r. sav.",
+          "Utenos r. sav.",
+          "Varėnos r. sav.",
+          "Vilkaviškio r. sav.",
+          "Vilniaus m. sav.",
+          "Vilniaus r. sav.",
+          "Visagino sav.",
+          "Zarasų r. sav."
+    ];
+        $html = '';
+        foreach($municipalities as $municipality) {
+            $html .= '<label class="filter-label">
+          <input type="checkbox" name="filter_sportbase_municipality" value="'.$municipality.'" class="filter-checkbox">
+          '.$municipality.'
+        </label>';
+        }
+        return $html;
+    }
+
+    private function getOrganizationTypes()
+    {
+        $types = ['Sporto organizacijos tipas', 'Fizinio aktyvumo veiklas vykdanti organizacija', 'Savivaldybės sporto ir (ar) švietimo įstaiga', 'Skėtinė sporto organizacija', 'Sporto klubas', 'Sporto šakos federacija', 'Kita'];
+        $html = '';
+        foreach($types as $type) {
+            $html .= '<label class="filter-label">
+          <input type="checkbox" name="filter_sportbase_type" value="'.$type.'" class="filter-checkbox">
+          '.$type.'
+        </label>';
+        }
+        return $html;
+    }
+
+    private function getSportbaseTypes()
+    {
+        $types = ['Aerodromai', 'Automobilių trasos', 'Motociklų trasos', 'Futbolo aikštės', 'Krepšinio aikštės'];
+        $html = '';
+        foreach($types as $type) {
+            $html .= '<label class="filter-label">
+          <input type="checkbox" name="filter_sportbase_type" value="'.$type.'" class="filter-checkbox">
+          '.$type.'
+        </label>';
+        }
+        return $html;
     }
 
     private function _request($api_endpoint)
