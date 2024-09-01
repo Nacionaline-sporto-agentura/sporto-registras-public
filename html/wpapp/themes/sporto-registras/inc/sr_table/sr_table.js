@@ -223,10 +223,6 @@
                 serverSide: false
             }
         },
-        sanitize_title: function (title) {
-
-            return title.toLowerCase().replace(/ /g, '-');
-        },
         createDataTable: function (config) {
             this.$table.DataTable({
                 processing: config.processing !== undefined ? config.processing : true,
