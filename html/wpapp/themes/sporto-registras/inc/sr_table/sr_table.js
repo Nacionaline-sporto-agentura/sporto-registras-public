@@ -37,6 +37,10 @@
                         name: 'name',
                         orderable: true,
                         searchable: true,
+                        render: function (data, type, row) {
+                            const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
+                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${row.name}</a>`;
+                        }
                     },
                     {
                         title: 'Rūšis',
@@ -84,16 +88,6 @@
                         },
                         orderable: true,
                         searchable: true
-                    },
-                    {
-                        title: 'Veiksmas',
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
-                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${sr_table_vars.I18N.READ_MORE}</a>`;
-                        }
                     }
                 ],
                 columnDefs: [],
@@ -189,7 +183,7 @@
                         }
                     },
                     {
-                        title: 'Aukšto meistriškumo sporto instruktoriai',
+                        title: 'AMS* instruktoriai',
                         name: 'amsInstructor',
                         data: null,
                         render: function (data, type, row) {
@@ -197,7 +191,7 @@
                         }
                     },
                     {
-                        title: 'Fizinio aktyvumo specialistai',
+                        title: 'FA* specialistai',
                         name: 'faSpecialist',
                         data: null,
                         render: function (data, type, row) {
@@ -205,7 +199,7 @@
                         }
                     },
                     {
-                        title: 'Fizinio aktyvumo instruktoriai',
+                        title: 'FA* instruktoriai',
                         name: 'faInstructor',
                         data: null,
                         render: function (data, type, row) {
@@ -278,7 +272,11 @@
                         name: 'name',
                         data: null,
                         render: function (data, type, row) {
-                            return row.name ?? '-';
+                            if (!row.name) {
+                                return '-';
+                            }
+                            const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
+                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${row.name}</a>`;
                         }
                     },
                     {
@@ -299,19 +297,6 @@
                         searchable: false,
                         render: function (data, type, row) {
                             return row.address !=null ? row.address : '-';
-                        }
-                    },
-                    {
-                        title: 'Veiksmas',
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            if (!row.name) {
-                                return '-';
-                            }
-                            const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
-                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${sr_table_vars.I18N.READ_MORE}</a>`;
                         }
                     }
                 ],
