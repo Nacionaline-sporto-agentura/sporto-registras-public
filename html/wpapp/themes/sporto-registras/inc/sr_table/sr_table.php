@@ -24,7 +24,7 @@ class SR_Table
     {
         if (isset($var[$key]) && is_array($var[$key])) {
             return isset($var[$key]['name']) ? $var[$key]['name'] : $var[$key]['plot_or_building_number'];
-        } elseif(isset($var[$key])) {
+        } elseif (isset($var[$key])) {
             return $var[$key] ?? null;
         }
     }
@@ -73,11 +73,11 @@ class SR_Table
     {
         $sr_id = absint(get_query_var('sr_id'));
         $out = '';
-        if(is_page($this->sport_base_page) && $sr_id > 0) {
+        if (is_page($this->sport_base_page) && $sr_id > 0) {
             $sr = $this->_request('/sportsBases/'. $sr_id .'/public');
             $types_fields = $this->_request('/types/sportsBases/spaces/typesAndFields/public');
 
-            if($sr instanceof WP_REST_Response && !isset($sr->data['code'])) {
+            if ($sr instanceof WP_REST_Response && !isset($sr->data['code'])) {
                 $page_content = $this->load_component('inc/sr_table/components/sport-base-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
 
                 $content = str_replace('[sport-base-title]', $sr->data['name'], $content);
@@ -86,11 +86,11 @@ class SR_Table
                 $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
                 $out = $this->show_404();
             }
-        } elseif(is_page($this->organization_page) && $sr_id > 0) {
+        } elseif (is_page($this->organization_page) && $sr_id > 0) {
             $sr = $this->_request('/tenants/organizations/' . $sr_id .'/public');
             $types_fields = $this->_request('/types/sportsBases/spaces/typesAndFields/public');
 
-            if($sr instanceof WP_REST_Response && isset($sr->data['id'])) {
+            if ($sr instanceof WP_REST_Response && isset($sr->data['id'])) {
 
                 $page_content = $this->load_component('inc/sr_table/components/organization-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
 
@@ -101,9 +101,9 @@ class SR_Table
                 $out = $this->show_404();
             }
         } else {
-            if(is_page($this->sport_base_page)) {
+            if (is_page($this->sport_base_page)) {
                 $content = str_replace('[sport-base-title]', __('Sporto bazė nerasta', 'sr'), $content);
-            } elseif(is_page($this->organization_page)) {
+            } elseif (is_page($this->organization_page)) {
                 $content = str_replace('[organization-title]', __('Sporto organizacija nerasta', 'sr'), $content);
             }
             $out = $this->show_404();
@@ -144,39 +144,50 @@ class SR_Table
     public function sport_persons_list(WP_REST_Request $request)
     {
         $params = $request->get_query_params();
-
-
+        $start = $params['start'] ?? 0;
+        $length = $params['length'] ?? 10;
         $sport = isset($params['sport']) ? $params['sport'] : '';
+        
+        $sportsTypes = $this->_request('/public/sportsTypes?pageSize=999&sort=name');
+        $availableSports = $sportsTypes->data['rows'] ?? [];
         $sr = $this->_request('/sportsPersons/count/public');
-        $rows = $sr->data['rows'] ?? [];
-        $totalRecords = $sr->data['total'] ?? 0;
+        
+        $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
+        $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'sportTypeName';
 
-        if(!$fake_data = get_transient('fake_data_sportpersons') && (isset($_GET['debug']) && $_GET['debug'] == 'true')) {
-            include SR_THEME_DIR . '/inc/sr_table/fake_data.php';
-            $fake_data = renderSportPersonsDataset(100);
-            set_transient('fake_data_sportpersons', $fake_data, 60 * 60);
+        $rows = $sr->data ?? [];
+
+        if (!empty($sport)) {
+            $sport_ids = (strpos($sport, '|') === false) ? [(int)$sport] : array_map('intval', explode('|', $sport));
+            $filteredSportTypes = array_filter($availableSports, function($sportType) use ($sport_ids) {
+                return in_array($sportType['id'], $sport_ids, true);
+            });
+            $filteredSportTypeNames = array_column($filteredSportTypes, 'name');
+        }else{
+            $filteredSportTypeNames = [];
         }
 
-        if (isset($sport) && !empty($sport)) {
-            // If there's only one sport to filter
-            if (strpos($sport, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($sport) {
-                    // Check if sportTypeName matches the search term
-                    return $item['sportTypeName'] === $sport;
-                });
-            } else {
-                // If there are multiple sports to filter
-                $sports = explode('|', $sport);
-                $fake_data = array_filter($fake_data, function ($item) use ($sports) {
-                    // Check if sportTypeName is in the list of sports
-                    return in_array($item['sportTypeName'], $sports);
-                });
+        if(!empty($rows))
+        foreach ($rows as $key => $row) {
+            if (!empty($sport)) {
+                if (!in_array($row['sportTypeName'], $filteredSportTypeNames)) {
+                    unset($rows[$key]);
+                    continue;
+                }
             }
+            $rows[$key] = array_merge([
+                'sportTypeName' => '-',
+                'coach' => '-',
+                'referee' => '-',
+                'amsInstructor' => '-',
+                'faSpecialist' => '-',
+                'faInstructor' => '-',
+                'athlete' => '-',
+            ], $row);
         }
-
-
-        $rows = array_values($fake_data);
-        $totalRecords = count($fake_data);
+        
+        $totalRecords = count($rows);
+        $rows = array_slice($rows, $start, $length);
 
         $data = (object) [];
         $data->recordsTotal = $totalRecords ?? 0;
@@ -196,7 +207,6 @@ class SR_Table
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'id';
 
-        $accessibility = isset($params['accessibility']) ? $params['accessibility'] : '';
         $sport = isset($params['sport']) ? $params['sport'] : '';
         $municipality = isset($params['municipality']) ? $params['municipality'] : '';
         $name = isset($params['name']) ? $params['name'] : '';
@@ -206,90 +216,41 @@ class SR_Table
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
             'sort' => ($order === 'desc' ? '' : '-') . $orderColumn,
-            'query[name]' => $search
         );
+
+        if (!empty($name)) {
+            $api_params['query[name][$ilike]'] = '%'.$name.'%';
+        }
+        if (!empty($type)) {
+            if(strpos($type, '|') === false) {
+                $api_params['query[type][id][$in]'] = [$type];
+            } else {
+                $api_params['query[type][id][$in]'] = explode('|', $type);
+            }
+        }
+        if (!empty($sport)) {
+            if(strpos($sport, '|') === false) {
+                $api_params['query[sportTypes][id][$in]'] = [$sport];
+            } else {
+                $api_params['query[sportTypes][id][$in]'] = explode('|', $sport);
+            }
+        }
+        if (!empty($municipality)) {
+            if(strpos($municipality, '|') === false) {
+                $api_params['query[address][municipality.code][$in]'] = [$municipality];
+            } else {
+                $api_params['query[address][municipality.code][$in]'] = explode('|', $municipality);
+            }
+        }
+
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-        $sr = $this->_request('/sportsBases/public' . $query);
+        $sr = $this->_request('/public/sportsBases' . $query);
+
+
 
         $rows = $sr->data['rows'] ?? [];
         $totalRecords = $sr->data['total'] ?? 0;
-
-        // cache fake data for 1 hour
-        if(!$fake_data = get_transient('fake_data_sportsbases') && (isset($_GET['debug']) && $_GET['debug'] == 'true')) {
-            include SR_THEME_DIR . '/inc/sr_table/fake_data.php';
-            $fake_data = renderSportbasesDataset(100);
-            set_transient('fake_data_sportsbases', $fake_data, 60 * 60);
-        }
-
-        if(isset($sport) && !empty($sport)) {
-            if(strpos($sport, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($sport) {
-                    return in_array($sport, array_column($item['sportTypes'], 'name'));
-                });
-            } else {
-                $sports = explode('|', $sport);
-                $fake_data = array_filter($fake_data, function ($item) use ($sports) {
-                    foreach ($sports as $s) {
-                        if (!in_array($s, array_column($item['sportTypes'], 'name'))) {
-                            return false;
-                        }
-                    }
-                    return true;
-                });
-            }
-        }
-
-        if (isset($municipality) && !empty($municipality)) {
-            if (strpos($municipality, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($municipality) {
-                    return strpos($item['municipality']['name'], $municipality) !== false;
-                });
-            } else {
-                $municipalities = explode('|', $municipality);
-                $fake_data = array_filter($fake_data, function ($item) use ($municipalities) {
-                    foreach ($municipalities as $m) {
-                        if (strpos($item['municipality']['name'], $m) !== false) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-            }
-        }
-
-        if (isset($type) && !empty($type)) {
-            if (strpos($type, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($type) {
-                    return strpos($item['type']['name'], $type) !== false;
-                });
-            } else {
-                $types = explode('|', $type);
-                $fake_data = array_filter($fake_data, function ($item) use ($types) {
-                    foreach ($types as $t) {
-                        if (strpos($item['type']['name'], $t) !== false) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-            }
-        }
-
-        if(isset($accessibility) && $accessibility == 1) {
-            $fake_data = array_filter($fake_data, function ($item) {
-                return $item['accessibility'] == 1;
-            });
-        }
-
-        if(isset($name) && !empty($name)) {
-            $fake_data = array_filter($fake_data, function ($item) use ($name) {
-                return stripos($item['name'], $name) !== false;
-            });
-        }
-
-        $rows = array_slice($fake_data, $start, 10);
-        $totalRecords = count($fake_data);
 
         $data = (object) [];
         $data->recordsTotal = $totalRecords ?? 0;
@@ -306,8 +267,8 @@ class SR_Table
         $length = $params['length'] ?? 10;
         $search = isset($params['search']['value']) ? sanitize_text_field($params['search']['value']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
-        $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'id';
-
+        $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'name';
+       
 
         $name = isset($params['name']) ? $params['name'] : '';
         $type = isset($params['type']) ? $params['type'] : '';
@@ -319,102 +280,33 @@ class SR_Table
         $api_params = array(
             'page' => ($start / $length) + 1,
             'pageSize' => $length,
-            'query[name]' => $search,
             'sort' => ($order == 'asc' ? '' : '-').$orderColumn,
         );
-
+        if (!empty($name)) {
+            $api_params['query[name][$ilike]'] = '%'.$name.'%';
+        }
+        if (!empty($type)) {
+            if(strpos($type, '|') === false) {
+                $api_params['query[type][id][$in]'] = [$type];
+            } else {
+                $api_params['query[type][id][$in]'] = explode('|', $type);
+            }
+        }
+        if(!empty($support)) {
+            $api_params['query[hasBeneficiaryStatus]'] = true;
+        }
+        if(!empty($nvo)) {
+            $api_params['query[nonGovernmentalOrganization]'] = true;
+        }
+        if(!empty($nvs)) {
+            $api_params['query[nonFormalEducation]'] = true;
+        }
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-        $sr = $this->_request('/tenants/organizations/public' . $query);
+     
+        $sr = $this->_request('/public/organizations' . $query);
         $rows = $sr->data['rows'] ?? [];
         $totalRecords = $sr->data['total'] ?? 0;
-
-        // cache fake data for 1 hour
-        if(!$fake_data = get_transient('fake_data_organizations') && (isset($_GET['debug']) && $_GET['debug'] == 'true')) {
-            include SR_THEME_DIR . '/inc/sr_table/fake_data.php';
-            $fake_data = renderOrganizationsDataset(100);
-            set_transient('fake_data_organizations', $fake_data, 60 * 60);
-        }
-
-        if(isset($sport) && !empty($sport)) {
-            if(strpos($sport, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($sport) {
-                    return in_array($sport, array_column($item['sports'], 'name'));
-                });
-            } else {
-                $sports = explode('|', $sport);
-                $fake_data = array_filter($fake_data, function ($item) use ($sports) {
-                    foreach ($sports as $s) {
-                        if (!in_array($s, array_column($item['sports'], 'name'))) {
-                            return false;
-                        }
-                    }
-                    return true;
-                });
-            }
-        }
-
-        if (isset($municipality) && !empty($municipality)) {
-            if (strpos($municipality, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($municipality) {
-                    return strpos($item['address'], $municipality) !== false;
-                });
-            } else {
-                $municipalities = explode('|', $municipality);
-                $fake_data = array_filter($fake_data, function ($item) use ($municipalities) {
-                    foreach ($municipalities as $m) {
-                        if (strpos($item['address'], $m) !== false) {
-                            return true; // Bent viena savivaldybė atitinka
-                        }
-                    }
-                    return false; // Jei jokios savivaldybės neatitinka
-                });
-            }
-        }
-
-        if (isset($type) && !empty($type)) {
-            if (strpos($type, '|') === false) {
-                $fake_data = array_filter($fake_data, function ($item) use ($type) {
-                    return strpos($item['type']['name'], $type) !== false;
-                });
-            } else {
-                $types = explode('|', $type);
-                $fake_data = array_filter($fake_data, function ($item) use ($types) {
-                    foreach ($types as $t) {
-                        if (strpos($item['type']['name'], $t) !== false) {
-                            return true; // Bent viena rūšis atitinka
-                        }
-                    }
-                    return false; // Jei jokios rūšies neatitinka
-                });
-            }
-        }
-
-        if(isset($support) && $support == 1) {
-            $fake_data = array_filter($fake_data, function ($item) {
-                return $item['support'] == 1;
-            });
-        }
-        if(isset($nvo) && $nvo == 1) {
-            $fake_data = array_filter($fake_data, function ($item) {
-                return $item['nvo'] == 1;
-            });
-        }
-        if(isset($nvs) && $nvs == 1) {
-            $fake_data = array_filter($fake_data, function ($item) {
-                return $item['nvs'] == 1;
-            });
-        }
-
-        if(isset($name) && !empty($name)) {
-            $fake_data = array_filter($fake_data, function ($item) use ($name) {
-                return stripos($item['name'], $name) !== false;
-            });
-        }
-
-        $rows = array_slice($fake_data, $start, 10);
-        $totalRecords = count($fake_data);
-
 
         $data = (object) [];
         $data->recordsTotal = $totalRecords ?? 0;
@@ -468,7 +360,9 @@ class SR_Table
             )
         );
         $filter = '';
-        if($atts['id'] == 'sportsbases') {
+
+
+        if ($atts['id'] == 'sportsbases') {
             $filter = '<div id="filters">
   <div class="search-container"> 
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -515,15 +409,12 @@ class SR_Table
     </nav>
   </div>
 
-  <div class="checkbox-container">
-    <input type="checkbox" id="filter_sportbase_accessility" name="filter_sportbase_accessility" class="custom-checkbox" value="1">
-    <label for="filter_sportbase_accessility" class="custom-label">'.__('Pritaikyta negalią turintiems asmenims', 'sr').'</label>
-  </div>
-
   <button id="clearFilters">'.__('Išvalyti', 'sr').'</button>
 </div>';
-        } elseif($atts['id'] == 'organizations') {
-            $filter = '<div id="filters">
+        } elseif ($atts['id'] == 'organizations') {
+            $filter = '<div class="desc">
+'.__('*NVO - Nevyriausybinė organizacija,   *NVŠ - Neformalusis vaikų švietimas', 'sr').'
+</div><div id="filters">
   <div class="search-container"> 
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
     
@@ -532,7 +423,7 @@ class SR_Table
 
   <div class="dropdown">
     <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
-      <div id="filter_organization_type" class="filter-dropdown-toogle">'.__('Sporto bazės rūšis', 'sr').'</div>
+      <div id="filter_organization_type" class="filter-dropdown-toogle">'.__('Organizacijos tipas', 'sr').'</div>
       <span class="selected-count"></span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down dropdown-icon"><path d="m6 9 6 6 6-6"/></svg>
     </div>
@@ -543,7 +434,7 @@ class SR_Table
     </nav>
   </div>
 
-  <div class="dropdown">
+  <!--div class="dropdown">
     <div class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
       <div id="filter_organization_sport"  class="filter-dropdown-toogle">'.__('Sporto šaka', 'sr').'</div>
       <span class="selected-count"></span>
@@ -554,7 +445,7 @@ class SR_Table
         '.$this->getSports().'
       </form>
     </nav>
-  </div>
+  </div-->
 
   <div class="checkbox-container">
     <input type="checkbox" id="filter_organization_support" name="filter_organization_support" class="custom-checkbox" value="1">
@@ -573,7 +464,7 @@ class SR_Table
 
   <button id="clearFilters">'.__('Išvalyti', 'sr').'</button>
 </div>';
-        } elseif($atts['id'] == 'sportpersons') {
+        } elseif ($atts['id'] == 'sportpersons') {
             $filter = '<div class="desc">
 '.__('*AMS - Aukšto meistriškumo sporto,   *FA - Fizinio aktyvumo', 'sr').'
 </div><div id="filters">
@@ -596,111 +487,76 @@ class SR_Table
     }
     private function getSports()
     {
-        $sports = ['Krepšinis', 'Futbolas', 'Plaukimas', 'Tenisas', 'Lengvoji atletika', 'Golfas', 'Volejbolas'];
+        $sr = $this->_request('/public/sportsTypes?pageSize=999&sort=name');
         $html = '';
-        foreach($sports as $sport) {
-            $html .= '<label class="filter-label">
-          <input type="checkbox" name="filter_sportbase_sport" value="'.$sport.'" class="filter-checkbox">
-          '.$sport.'
-        </label>';
+        if ($sr instanceof WP_REST_Response && isset($sr->data['rows'])) {
+            foreach ($sr->data['rows'] as $sport) {
+                $html .= '<label class="filter-label">
+            <input type="checkbox" name="filter_sportbase_sport" value="'.$sport['id'].'" class="filter-checkbox">
+            '.$sport['name'].'
+            </label>';
+            }
         }
         return $html;
     }
     private function getMunicipalities()
     {
-        $municipalities = [
-          "Alytaus m. sav.",
-          "Alytaus r. sav.",
-          "Anykščių r. sav.",
-          "Birštono sav.",
-          "Biržų r. sav.",
-          "Druskininkų sav.",
-          "Elektrėnų sav.",
-          "Ignalinos r. sav.",
-          "Jonavos r. sav.",
-          "Joniškio r. sav.",
-          "Jurbarko r. sav.",
-          "Kaišiadorių r. sav.",
-          "Kalvarijos sav.",
-          "Kauno m. sav.",
-          "Kauno r. sav.",
-          "Kazlų Rūdos sav.",
-          "Kėdainių r. sav.",
-          "Kelmės r. sav.",
-          "Klaipėdos m. sav.",
-          "Klaipėdos r. sav.",
-          "Kretingos r. sav.",
-          "Kupiškio r. sav.",
-          "Lazdijų r. sav.",
-          "Marijampolės sav.",
-          "Mažeikių r. sav.",
-          "Molėtų r. sav.",
-          "Neringos sav.",
-          "Pagėgių sav.",
-          "Pakruojo r. sav.",
-          "Palangos m. sav.",
-          "Panevėžio m. sav.",
-          "Panevėžio r. sav.",
-          "Pasvalio r. sav.",
-          "Plungės r. sav.",
-          "Prienų r. sav.",
-          "Radviliškio r. sav.",
-          "Raseinių r. sav.",
-          "Rietavo sav.",
-          "Rokiškio r. sav.",
-          "Skuodo r. sav.",
-          "Šakių r. sav.",
-          "Šalčininkų r. sav.",
-          "Šiaulių m. sav.",
-          "Šiaulių r. sav.",
-          "Šilalės r. sav.",
-          "Šilutės r. sav.",
-          "Širvintų r. sav.",
-          "Švenčionių r. sav.",
-          "Tauragės r. sav.",
-          "Telšių r. sav.",
-          "Trakų r. sav.",
-          "Ukmergės r. sav.",
-          "Utenos r. sav.",
-          "Varėnos r. sav.",
-          "Vilkaviškio r. sav.",
-          "Vilniaus m. sav.",
-          "Vilniaus r. sav.",
-          "Visagino sav.",
-          "Zarasų r. sav."
-    ];
+        $body = json_encode([
+            'filters' => []
+        ]);
+        $args = [
+            'headers' => [
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ],
+            'body'    => $body,
+            'method'  => 'POST',
+        ];
+        $response = wp_remote_post('https://boundaries.biip.lt/v1/municipalities/search?sort_by=name&sort_order=asc&size=100', $args);
         $html = '';
-        foreach($municipalities as $municipality) {
-            $html .= '<label class="filter-label">
-          <input type="checkbox" name="filter_sportbase_municipality" value="'.$municipality.'" class="filter-checkbox">
-          '.$municipality.'
-        </label>';
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            echo "Something went wrong: $error_message";
+        } else {
+            $response_body = wp_remote_retrieve_body($response);
+            $municipalities = json_decode($response_body, true);
+            foreach ($municipalities['items'] as $municipality) {
+                $html .= '<label class="filter-label">
+              <input type="checkbox" name="filter_sportbase_municipality" value="'.$municipality['code'].'" class="filter-checkbox">
+              '.$municipality['name'].'
+            </label>';
+            }
         }
         return $html;
     }
 
     private function getOrganizationTypes()
     {
-        $types = ['Sporto organizacijos tipas', 'Fizinio aktyvumo veiklas vykdanti organizacija', 'Savivaldybės sporto ir (ar) švietimo įstaiga', 'Skėtinė sporto organizacija', 'Sporto klubas', 'Sporto šakos federacija', 'Kita'];
+        $sr = $this->_request('/public/organizationTypes?pageSize=999&sort=name');
         $html = '';
-        foreach($types as $type) {
-            $html .= '<label class="filter-label">
-          <input type="checkbox" name="filter_sportbase_type" value="'.$type.'" class="filter-checkbox">
-          '.$type.'
-        </label>';
+        if ($sr instanceof WP_REST_Response && isset($sr->data['rows'])) {
+             
+            foreach ($sr->data['rows'] as $type) {
+                $html .= '<label class="filter-label">
+            <input type="checkbox" name="filter_sportbase_type" value="'.$type['id'].'" class="filter-checkbox">
+            '.$type['name'].'
+            </label>';
+            }
         }
         return $html;
     }
 
     private function getSportbaseTypes()
     {
-        $types = ['Aerodromai', 'Automobilių trasos', 'Motociklų trasos', 'Futbolo aikštės', 'Krepšinio aikštės'];
+        $sr = $this->_request('/public/sportsBaseTypes?pageSize=999&sort=name');
         $html = '';
-        foreach($types as $type) {
-            $html .= '<label class="filter-label">
-          <input type="checkbox" name="filter_sportbase_type" value="'.$type.'" class="filter-checkbox">
-          '.$type.'
-        </label>';
+        if ($sr instanceof WP_REST_Response && isset($sr->data['rows'])) {
+            foreach ($sr->data['rows'] as $type) {
+                $html .= '<label class="filter-label">
+            <input type="checkbox" name="filter_sportbase_type" value="'.$type['id'].'" class="filter-checkbox">
+            '.$type['name'].'
+            </label>';
+            }
         }
         return $html;
     }

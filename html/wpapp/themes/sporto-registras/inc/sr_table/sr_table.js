@@ -44,40 +44,50 @@
                     },
                     {
                         title: 'Rūšis',
-                        data: null,
-                        name: 'type.name',
-                        orderable: false,
+                        name: 'type',
+                        data: 'type',
                         searchable: false,
                         render: function (data, type, row) {
-                            return row.type.name ?? '-';
+                            if(row.type != null && row.type.name != null) {
+                                return row.type.name;
+                            } else {
+                                return '-';
+                            }
                         }
                     },
                     {
                         title: 'Savivaldybė',
-                        data: null,
-                        name: 'municipality',
+                        data: 'address.municipality.name',
+                        name: 'address.municipality.name',
                         orderable: true,
                         searchable: true,
                         render: function (data, type, row) {
-                            return row.municipality?.name ?? '-';                                                
+                            return row.address?.municipality?.name ?? '-'; 
                         }
-                    },
+                    },                    
                     {
                         title: 'Sporto šakos',
-                        data: null,
+                        data: 'sportTypes',
                         name: 'sportTypes',
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            return row.sportTypes.map(sportType => sportType.name).join(', ') || '-';
+                            if (Array.isArray(row.sportTypes) && row.sportTypes.length > 0) {
+                                return row.sportTypes.map(sportType => sportType.name).join(', ');
+                            } else {
+                                return '-'; 
+                            }
                         }
-                    },
+                    },                    
                     {
                         title: 'Erdvių skaičius',
-                        data: 'spacesCount',
-                        name: 'spacesCount',
+                        data: null,
+                        name: 'spaces',
                         orderable: true,
-                        searchable: false
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return Object(row.spaces).length || '-';
+                        }
                     },
                     {
                         title: 'Organizacija',
@@ -169,7 +179,7 @@
                     {
                         title: 'Treneriai',
                         name: 'coach',
-                        data: null,
+                        data: 'coach',
                         render: function (data, type, row) {
                             return row.coach ?? '-';
                         }
@@ -177,7 +187,7 @@
                     {
                         title: 'Teisėjai',
                         name: 'referee',
-                        data: null,
+                        data: 'referee',
                         render: function (data, type, row) {
                             return row.referee ?? '-';
                         }
@@ -185,7 +195,7 @@
                     {
                         title: 'AMS* instruktoriai',
                         name: 'amsInstructor',
-                        data: null,
+                        data: 'amsInstructor',
                         render: function (data, type, row) {
                             return row.amsInstructor ?? '-';
                         }
@@ -193,7 +203,7 @@
                     {
                         title: 'FA* specialistai',
                         name: 'faSpecialist',
-                        data: null,
+                        data: 'faSpecialist',
                         render: function (data, type, row) {
                             return row.faSpecialist ?? '-';
                         }
@@ -201,7 +211,7 @@
                     {
                         title: 'FA* instruktoriai',
                         name: 'faInstructor',
-                        data: null,
+                        data: 'faInstructor',
                         render: function (data, type, row) {
                             return row.faInstructor ?? '-';
                         }
@@ -209,7 +219,7 @@
                     {
                         title: 'Sportininkai',
                         name: 'athlete',
-                        data: null,
+                        data: 'athlete',
                         render: function (data, type, row) {
                             return row.athlete ?? '-';
                         }
@@ -243,7 +253,7 @@
                 },
                 applyFilters: function() {
                     var filter_sportpersons_sport = $('#filter_sportpersons_sport_form input:checked').map(function() {
-                        return this.value;
+                        return this.value; 
                     }).get().join('|');
 
                     sr_table.$tables['sportpersons'].filters = {
@@ -270,7 +280,7 @@
                     {
                         title: 'Sporto organizacijos pavadinimas',
                         name: 'name',
-                        data: null,
+                        data: 'name',
                         render: function (data, type, row) {
                             if (!row.name) {
                                 return '-';
@@ -281,26 +291,29 @@
                     },
                     {
                         title: 'Tipas',
-                        data: null,
                         name: 'type',
-                        orderable: false,
+                        data: 'type',
                         searchable: false,
                         render: function (data, type, row) {
-                            return row.type?.name ?? '-';
+                            if(row.type != null && row.type.name != null) {
+                                return row.type.name;
+                            } else {
+                                return '-';
+                            }
                         }
                     },
                     {
                         title: 'Adresas',
-                        data: null,
                         name: 'address',
-                        orderable: false,
+                        data: 'address',
                         searchable: false,
                         render: function (data, type, row) {
-                            return row.address !=null ? row.address : '-';
+                            return row.address == ''?'-':row.address;
                         }
                     }
                 ],
-                columnDefs: [],
+                columnDefs: [
+                ],
                 initFilters: function() {
                     $('#filter_organization_name').on('keyup', function() {
                         sr_table.$tables['organizations'].applyFilters();
@@ -406,7 +419,7 @@
                 columns: config.columns,
                 columnDefs: config.columnDefs,
                 autoWidth: true,
-                pageLength: 20,
+                pageLength: 10,
                 bDestroy: true,
                 dom: '<"top"<"biip_table_header">Bf>rt<"bottom"ip>',
                 responsive: true,
