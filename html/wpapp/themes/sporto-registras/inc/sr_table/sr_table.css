@@ -18,17 +18,374 @@ table.dataTable.no-footer,
     color: #4B5565;
     border-bottom: 0;
 }
+
 table.dataTable thead th,
 table.dataTable th {
-    color:#121926;
+    color: #121926;
 }
-.dataTable { width:100% !important;}
+
+.dataTable {
+    width: 100% !important;
+}
+
 div.dataTables_processing>div:last-child>div {
     background: rgba(0, 61, 43, 0.9);
 }
-table.dataTable tr.odd{
+
+table.dataTable tr.odd {
     background-color: #f9f9f9;
 }
-table.dataTable tr.even{
+
+table.dataTable tr.even {
     background-color: #fff;
+}
+
+.desc {
+    font-size: 12px;
+    color: #4B5565
+}
+
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+    color: #121926;
+    margin-top: 16px;
+    margin-bottom: 24px
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    /* Jei norite, kad paieškos laukelis užimtų visą plotį */
+    max-width: 260px;
+    /* Arba nustatykite konkretų maksimalų plotį */
+}
+
+.search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #121926;
+    /* Ikonos spalva */
+}
+
+.search-field {
+    width: 100%;
+    padding: 12px 12px 12px 32px;
+    /* Pridedama vieta ikonai */
+    border: 0;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 14px;
+    background-color: #F8FAFC;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none
+}
+
+
+/* Checkbox konteineris */
+.checkbox-container {
+    border-radius: 8px;
+    overflow: hidden
+}
+
+/* Slapto checkboxo stilius */
+.custom-checkbox {
+    display: none;
+}
+
+/* Label stilius */
+.custom-label {
+    color: #121926;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: #F8FAFC;
+    height: 40px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative
+}
+
+/* Kai checkbox yra pažymėtas, keičiamas visas blokas */
+.custom-checkbox:checked+.custom-label {
+    background-color: #ADE6B9;
+}
+
+.checkbox-container:hover {
+    background-color: #F1F5F9;
+}
+
+/* Išvaizda prieš pažymint checkboxą */
+.custom-label::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: #E3E8EF;
+    border-radius: 4px;
+    margin-right: 8px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.read-more{
+    font-weight: 500;
+}
+.custom-checkbox:checked+.custom-label::before {
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.custom-checkbox:checked+.custom-label::after {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 14px;
+    transform: rotate(45deg);
+    height: 10px;
+    width: 4px;
+    border-bottom: 2px solid #003D2B;
+    border-right: 2px solid #003D2B;
+}
+
+/**/
+/* Basic styling for dropdown */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #f6f7f8;
+    border: 1px solid #f6f7f8;
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 8px 0 12px;
+    font-family: "Inter v8 latin 500", sans-serif;
+    font-weight: 500;
+    line-height: 34px;
+    transition: all .2s;
+}
+
+/* Pasirinktų elementų skaičiaus stilius */
+.selected-count {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 8px;
+    color: #003D2B;
+}
+
+.dropdown-icon {
+    margin-left: auto;
+    width: 20px
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 900;
+
+    background-color: #fff;
+    border: 1px solid #1b1f2114;
+    border-radius: 8px;
+    width: 320px;
+    margin-top: 4px;
+    padding: 4px;
+
+
+    max-height: 300px;
+    /* Nustatykite maksimalų aukštį */
+    overflow-y: auto;
+    /* Pridėti slankiklį, jei turinys viršija maksimalų aukštį */
+
+}
+
+/* Show the dropdown when it's active */
+.dropdown.active .dropdown-menu {
+    display: block;
+}
+
+
+/* Slapto checkboxo stilius */
+.filter-checkbox {
+    display: none;
+}
+
+/* Label stilius */
+.filter-label {
+    margin-bottom: 2px;
+    font-size: 14px;
+    color: #121926;
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 12px;
+    min-height: 40px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative
+}
+
+/* Kai checkbox yra pažymėtas, keičiamas visas blokas */
+.filter-label:has(.filter-checkbox:checked) {
+    background-color: #ADE6B9;
+    /* pasirinkta mėlyna spalva */
+}
+
+.filter-label:hover {
+    background-color: #F1F5F9;
+}
+
+/* Išvaizda prieš pažymint checkboxą */
+.filter-label::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background: #E3E8EF;
+    border-radius: 4px;
+    margin-right: 8px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.filter-label:has(.filter-checkbox:checked):before {
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.filter-label:has(.filter-checkbox:checked):after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: auto;
+    bottom: auto;
+    transform: rotate(45deg);
+    height: 10px;
+    width: 4px;
+    margin-bottom: 2px;
+    border-bottom: 2px solid #003D2B;
+    border-right: 2px solid #003D2B;
+}
+
+table.dataTable thead th,
+table.dataTable thead td {
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #121926
+}
+
+/*Table body*/
+table.dataTable tbody th,
+table.dataTable tbody td {
+    text-align: left;
+    padding: 12px 8px;
+    font-size: 14px;
+    color: #4B5565
+}
+
+table.dataTable tbody tr {
+    cursor: pointer
+}
+
+table.dataTable tbody tr.odd {
+    background-color: #f9f9f9;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #ADE6B9
+}
+
+table.dataTable tbody td:first-child,
+table.dataTable tbody th:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+table.dataTable tbody td:last-child,
+table.dataTable tbody th:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+/*New pagination style*/
+.dataTables_wrapper .dataTables_paginate {
+    float: right;
+    text-align: right;
+    padding-top: 1em
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    min-width: 40px;
+    height: 40px;
+    font-size: 14px;
+    color: #121926 !important;
+    background-color: #F8FAFC !important;
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: .5em 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #ADE6B9 !important;
+    border:0;
+    box-shadow:initial;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    cursor: default !important;
+}
+
+#clearFilters {
+    border: 0;
+    padding: 12px;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid #1b1f2114;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+@media (max-width:560px) {
+    #filters>div {
+        width: 100%
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
 }

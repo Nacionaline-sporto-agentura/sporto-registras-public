@@ -46,8 +46,8 @@ class SR_Frontpage
             array(
                 'coordinates' => '23.7486, 55.0904',  // Lietuvos geografinė centro vieta
                 'zoom' => '7',
-                'pin' => SR_THEME_URL . '/assets/images/pin3.svg',
-                'pin_size' => '26,38',
+                'pin' => SR_THEME_URL . '/assets/images/sr-pin-icon.png',
+                'pin_size' => '40,46',
                 'map_height' => '800px',
                 'add_layer' => 'false'
             ),
@@ -64,6 +64,8 @@ class SR_Frontpage
         wp_enqueue_script('sr-frontpage-js', SR_THEME_URL . '/inc/sr_frontpage/sr_frontpage.js', ['jquery'], $sr_frontpage_js_ver, true);
 
 
+        $sport_base_page = get_page_by_path('sporto-bazes')->ID ?? $sport_base_page = 0;
+
         wp_localize_script('sr-frontpage-js', 'sr_map_config', array(
             'base_map_url' => SPORT_BASES_MAP_URL,
             'coordinates' => explode(',', $atts['coordinates']),
@@ -73,6 +75,10 @@ class SR_Frontpage
                 'url' => $atts['pin'],
                 'size' => explode(',', $atts['pin_size'])
             ],
+            'sport_base_url' => get_permalink($sport_base_page),
+            'i18n' => [
+                'more' => __('Plačiau', 'sr'),
+            ]
         ));
 
         return '<div class="sr-map__wrapper"><div id="sr-map" style="height:'.$atts['map_height'].'"></div></div>';
