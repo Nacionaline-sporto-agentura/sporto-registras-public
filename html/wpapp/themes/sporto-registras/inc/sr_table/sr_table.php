@@ -99,12 +99,11 @@ class SR_Table
                 $out = $this->show_404();
             }
         } elseif (is_page($this->organization_page) && $sr_id > 0) {
-            $sr = $this->_request('/tenants/organizations/' . $sr_id .'/public');
-            $types_fields = $this->_request('/types/sportsBases/spaces/typesAndFields/public');
+            $sr = $this->_request('/public/organizations/' . $sr_id);
 
             if ($sr instanceof WP_REST_Response && isset($sr->data['id'])) {
 
-                $page_content = $this->load_component('inc/sr_table/components/organization-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
+                $page_content = $this->load_component('inc/sr_table/components/organization-page', ['data' => $sr->data]);
 
                 $content = str_replace('[organization-title]', $sr->data['name'], $content);
                 $content = str_replace('[content]', $page_content, $content);

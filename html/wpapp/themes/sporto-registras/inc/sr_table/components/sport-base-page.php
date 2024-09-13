@@ -73,12 +73,8 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
 <?php } ?>
 <div class="sport-base__data">
     <div class="sport-base__tabs">
-        <div class="sport-base__tabs-header">
-            <div class="sport-base__tab sport-base__tab--active" data-tab="overview"><?php _e('Apžvalga', 'sr');?></div>
-            <?php if (!empty($args['data']['spaces'])) {?><div class="sport-base__tab" data-tab="spaces"><?php _e('Erdvės', 'sr');?></div><?php } ?>
-            <?php if (!empty($args['data']['tenants'])) {?><div class="sport-base__tab" data-tab="organizations"><?php _e('Organizacijos', 'sr');?></div><?php } ?>
-        </div>
         <div class="sport-base__tab-content" data-tab="overview">
+            <h2><?php _e('Apžvalga', 'sr');?></h2>
             <ul class="sport-base__overview">
                 <?php if (!empty($args['data']['publicWifi'])) { ?>
                     <li><svg class="sport-base__ico sport-base__ico-publicWifi" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -131,6 +127,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
             </ul>
         </div>
         <div class="sport-base__tab-content" data-tab="spaces">
+            <h2><?php _e('Erdvės', 'sr');?></h2>
             <?php if (!empty($args['data']['spaces'])) { ?>
             <?php foreach ($args['data']['spaces'] as $spaces) { ?>
                 <div class="sport-base__space">
@@ -176,6 +173,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
         </div>
         <?php if (!empty($args['data']['tenants'])) {?>
         <div class="sport-base__tab-content" data-tab="organizations">
+            <h2><?php _e('Organizacijos', 'sr');?></h2>
             <?php foreach ($args['data']['tenants'] as $tenant) { ?>
                 <div class="sport-base__space">
                     <h3 class="sport-base__space-title"><?php echo $tenant['name'];?></h3>
