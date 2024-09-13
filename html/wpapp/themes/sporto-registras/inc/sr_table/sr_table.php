@@ -58,6 +58,20 @@ class SR_Table
             $sr_page_css_ver  = date("ymd-His", filemtime(SR_THEME_DIR . '/inc/sr_table/sr_page.css'));
             wp_enqueue_style('sr-page-styles', SR_THEME_URL . '/inc/sr_table/sr_page.css', [], $sr_page_css_ver, 'all');
             wp_enqueue_script('sr-page-js', SR_THEME_URL . '/inc/sr_table/sr_page.js', ['jquery'], $sr_page_js_ver, true);
+
+            wp_localize_script(
+                'sr-page-js',
+                'objVars',
+                array(
+                    'ajaxurl' => admin_url('admin-ajax.php'),
+                    'map'=>[
+                        'ico'=> SR_THEME_URL . '/assets/images/sr-pin-icon.png',
+                        'ico_width'=> 40,
+                        'ico_height'=> 46,
+                        'zoom'=> 10,
+                    ]
+                )
+            );
         }
     }
     public function register_rewrite_rule()
@@ -74,11 +88,9 @@ class SR_Table
         $sr_id = absint(get_query_var('sr_id'));
         $out = '';
         if (is_page($this->sport_base_page) && $sr_id > 0) {
-            $sr = $this->_request('/sportsBases/'. $sr_id .'/public');
-            $types_fields = $this->_request('/types/sportsBases/spaces/typesAndFields/public');
-
+            $sr = $this->_request('/public/sportsBases/'. $sr_id);
             if ($sr instanceof WP_REST_Response && !isset($sr->data['code'])) {
-                $page_content = $this->load_component('inc/sr_table/components/sport-base-page', ['data' => $sr->data, 'types_fields' => $types_fields->data]);
+                $page_content = $this->load_component('inc/sr_table/components/sport-base-page', ['data' => $sr->data]);
 
                 $content = str_replace('[sport-base-title]', $sr->data['name'], $content);
                 $content = str_replace('[content]', $page_content, $content);
@@ -147,11 +159,11 @@ class SR_Table
         $start = $params['start'] ?? 0;
         $length = $params['length'] ?? 10;
         $sport = isset($params['sport']) ? $params['sport'] : '';
-        
+
         $sportsTypes = $this->_request('/public/sportsTypes?pageSize=999&sort=name');
         $availableSports = $sportsTypes->data['rows'] ?? [];
         $sr = $this->_request('/sportsPersons/count/public');
-        
+
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['name'] : 'sportTypeName';
 
@@ -159,33 +171,34 @@ class SR_Table
 
         if (!empty($sport)) {
             $sport_ids = (strpos($sport, '|') === false) ? [(int)$sport] : array_map('intval', explode('|', $sport));
-            $filteredSportTypes = array_filter($availableSports, function($sportType) use ($sport_ids) {
+            $filteredSportTypes = array_filter($availableSports, function ($sportType) use ($sport_ids) {
                 return in_array($sportType['id'], $sport_ids, true);
             });
             $filteredSportTypeNames = array_column($filteredSportTypes, 'name');
-        }else{
+        } else {
             $filteredSportTypeNames = [];
         }
 
-        if(!empty($rows))
-        foreach ($rows as $key => $row) {
-            if (!empty($sport)) {
-                if (!in_array($row['sportTypeName'], $filteredSportTypeNames)) {
-                    unset($rows[$key]);
-                    continue;
+        if (!empty($rows)) {
+            foreach ($rows as $key => $row) {
+                if (!empty($sport)) {
+                    if (!in_array($row['sportTypeName'], $filteredSportTypeNames)) {
+                        unset($rows[$key]);
+                        continue;
+                    }
                 }
+                $rows[$key] = array_merge([
+                    'sportTypeName' => '-',
+                    'coach' => '-',
+                    'referee' => '-',
+                    'amsInstructor' => '-',
+                    'faSpecialist' => '-',
+                    'faInstructor' => '-',
+                    'athlete' => '-',
+                ], $row);
             }
-            $rows[$key] = array_merge([
-                'sportTypeName' => '-',
-                'coach' => '-',
-                'referee' => '-',
-                'amsInstructor' => '-',
-                'faSpecialist' => '-',
-                'faInstructor' => '-',
-                'athlete' => '-',
-            ], $row);
         }
-        
+
         $totalRecords = count($rows);
         $rows = array_slice($rows, $start, $length);
 
@@ -222,21 +235,21 @@ class SR_Table
             $api_params['query[name][$ilike]'] = '%'.$name.'%';
         }
         if (!empty($type)) {
-            if(strpos($type, '|') === false) {
+            if (strpos($type, '|') === false) {
                 $api_params['query[type][id][$in]'] = [$type];
             } else {
                 $api_params['query[type][id][$in]'] = explode('|', $type);
             }
         }
         if (!empty($sport)) {
-            if(strpos($sport, '|') === false) {
+            if (strpos($sport, '|') === false) {
                 $api_params['query[sportTypes][id][$in]'] = [$sport];
             } else {
                 $api_params['query[sportTypes][id][$in]'] = explode('|', $sport);
             }
         }
         if (!empty($municipality)) {
-            if(strpos($municipality, '|') === false) {
+            if (strpos($municipality, '|') === false) {
                 $api_params['query[address][municipality.code][$in]'] = [$municipality];
             } else {
                 $api_params['query[address][municipality.code][$in]'] = explode('|', $municipality);
@@ -246,8 +259,6 @@ class SR_Table
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
         $sr = $this->_request('/public/sportsBases' . $query);
-
-
 
         $rows = $sr->data['rows'] ?? [];
         $totalRecords = $sr->data['total'] ?? 0;
@@ -268,7 +279,7 @@ class SR_Table
         $search = isset($params['search']['value']) ? sanitize_text_field($params['search']['value']) : '';
         $order = isset($params['order']) ? $params['order'][0]['dir'] : 'asc';
         $orderColumn = isset($params['columns']) ? $params['columns'][$params['order'][0]['column']]['data'] : 'name';
-       
+
 
         $name = isset($params['name']) ? $params['name'] : '';
         $type = isset($params['type']) ? $params['type'] : '';
@@ -286,24 +297,24 @@ class SR_Table
             $api_params['query[name][$ilike]'] = '%'.$name.'%';
         }
         if (!empty($type)) {
-            if(strpos($type, '|') === false) {
+            if (strpos($type, '|') === false) {
                 $api_params['query[type][id][$in]'] = [$type];
             } else {
                 $api_params['query[type][id][$in]'] = explode('|', $type);
             }
         }
-        if(!empty($support)) {
+        if (!empty($support)) {
             $api_params['query[hasBeneficiaryStatus]'] = true;
         }
-        if(!empty($nvo)) {
+        if (!empty($nvo)) {
             $api_params['query[nonGovernmentalOrganization]'] = true;
         }
-        if(!empty($nvs)) {
+        if (!empty($nvs)) {
             $api_params['query[nonFormalEducation]'] = true;
         }
         $query = http_build_query($api_params);
         $query = !empty($query) ? '?' . $query : '';
-     
+
         $sr = $this->_request('/public/organizations' . $query);
         $rows = $sr->data['rows'] ?? [];
         $totalRecords = $sr->data['total'] ?? 0;
@@ -535,7 +546,7 @@ class SR_Table
         $sr = $this->_request('/public/organizationTypes?pageSize=999&sort=name');
         $html = '';
         if ($sr instanceof WP_REST_Response && isset($sr->data['rows'])) {
-             
+
             foreach ($sr->data['rows'] as $type) {
                 $html .= '<label class="filter-label">
             <input type="checkbox" name="filter_sportbase_type" value="'.$type['id'].'" class="filter-checkbox">

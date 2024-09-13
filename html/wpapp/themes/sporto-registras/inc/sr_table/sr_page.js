@@ -193,16 +193,32 @@
     };
     const sr_manager_map = {
         init: function() {
-            const mapContainer = document.getElementById('sport-base__manager-map');
-            if(!mapContainer || !maplibregl) return;
+            if (!document.getElementById('sport-base__manager-map') || !maplibregl) return;
+            const mapElement = document.querySelector('.sport-base__manager-map-wrapper');
+            const lat = parseFloat(mapElement.getAttribute('data-lat'));
+            const lng = parseFloat(mapElement.getAttribute('data-lng'));
+
             const map = new maplibregl.Map({
                 container: 'sport-base__manager-map',
                 style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
-                center: [23.8813, 55.1694],
-                zoom: 8
+                center: [lng, lat],
+                zoom: objVars.map.zoom,
+                attributionControl: false
             });
-            const marker = new maplibregl.Marker()
-                .setLngLat([23.8813, 55.1694])
+            map.addControl(new maplibregl.AttributionControl({
+                compact: true
+            }));
+            const markerDiv = document.createElement('div');
+            markerDiv.className = 'custom-marker';
+            markerDiv.style.backgroundImage = `url(${objVars.map.ico})`;
+            markerDiv.style.backgroundSize = 'contain';
+            markerDiv.style.width = `${objVars.map.ico_width}px`;
+            markerDiv.style.height = `${objVars.map.ico_height}px`;
+
+            const marker = new maplibregl.Marker({
+                    element: markerDiv
+                })
+                .setLngLat([lng, lat])
                 .addTo(map);
         }
     }

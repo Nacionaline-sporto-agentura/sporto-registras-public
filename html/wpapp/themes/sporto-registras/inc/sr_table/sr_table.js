@@ -81,11 +81,12 @@
                     },                    
                     {
                         title: 'Erdvių skaičius',
-                        data: null,
+                        data: 'spaces',
                         name: 'spaces',
                         orderable: true,
                         searchable: false,
                         render: function (data, type, row) {
+                            console.log(row);
                             return Object(row.spaces).length || '-';
                         }
                     },
