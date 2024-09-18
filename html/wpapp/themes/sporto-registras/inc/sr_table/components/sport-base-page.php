@@ -24,7 +24,7 @@ if (isset($args['data']['spaces'])) {
 $photos = '';
 $photos_count = 0;
 foreach ($args['data']['photos'] as $photo) {
-    if (empty($photo['public'])) {
+    if (empty($photo['public']) && $photo['public'] == true) {
         $photos .= '<a href="'.$photo['url'].'" data-elementor-lightbox-slideshow="photo-gallery" class="sport-base__photo" data-elementor-lightbox-title="' . $photo['description'] . '" style="background-image:url('.$photo['url'].');"></a>';
         $photos_count++;
     }
@@ -56,7 +56,7 @@ if (!function_exists('fix_url')) {
 <div class="sport-base__address"><svg class="sport-base__address__icon" xmlns="
 http://www.w3.org/2000/svg"
 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg> <?php echo $address;?></div>
-<ul class="sport-base__types"><?php echo !empty($sportTypes) ? '<li>'.implode('</li><li>', $sportTypes).'</li>' : '';?></ul>
+<ul class="sport-base__types tags-wrapper"><?php echo !empty($sportTypes) ? '<li class="tag">'.implode('</li><li class="tag">', $sportTypes).'</li>'.'<li class="more-button">'.__('Daugiau...','sr').'</li>' : '';?></ul>
 <?php if ($photos_count > 0) { ?>
 <div class="sport-base__photos__wrapper">
     <div class="sport-base__photos sport-base__photos__count-<?php echo $photos_count > 5 ? 5 : $photos_count;?>"><?php echo !empty($photos) ? $photos : '';?></div>
@@ -141,10 +141,11 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
                         $spaces['sportTypes'] = array_filter($spaces['sportTypes']);
                 if (!empty($spaces['sportTypes'])) {
                     ?>
-                        <ul class="sport-base__types">
+                        <ul class="sport-base__types tags-wrapper">
                             <?php foreach ($spaces['sportTypes'] as $sportType) { ?>
-                                <li><?php echo $sportType['name'];?></li>
+                                <li class="tag"><?php echo $sportType['name'];?></li>
                             <?php } ?>
+                            <li class="more-button"><?php _e('Daugiau...','sr');?></li>
                         </ul>
                         <?php } ?>
                         
