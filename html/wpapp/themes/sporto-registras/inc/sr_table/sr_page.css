@@ -48,8 +48,6 @@
     flex-grow: 0;
     color:#344054;
     font-size:14px;
-    margin-right: 8px;
-    margin-bottom:8px;
 }
 
 .sport-base__photos {
@@ -238,6 +236,12 @@
 .sport-base__space{
     display:block;
 }
+.sport-base__space:hover{
+    border-color:var(--sr-secondary-color)
+}
+a.sport-base__space__heading:hover h3.sport-base__space-title{
+    color:var(--sr-primary-color) !important;
+}
 .sport-base__space__technicalCondition--excellent{
     background-color: #cfe2ff;
     color:#052c65;
@@ -278,6 +282,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.tags-wrapper {
+    display: flex;
+    flex-wrap: nowrap; 
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    overflow: hidden; 
+}
+.tags-wrapper .more-button {
+    display: none; 
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    background-color: white;
+    border: 1px solid #E6E6E6;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #242424;
+    cursor: pointer;
 }
 .sport-organization__manager-map-wrapper,
 .sport-base__manager-map-wrapper{

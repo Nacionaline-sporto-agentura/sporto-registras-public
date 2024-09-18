@@ -379,13 +379,62 @@
                 });
             }
         }
-    }
+    };
+
+    const sr_tags = {
+        init() {
+            document.querySelectorAll('.tags-wrapper').forEach(wrapper => {
+                const tags = Array.from(wrapper.querySelectorAll('.tag'));
+                const moreButton = wrapper.querySelector('.more-button');
+                
+                if (moreButton) {
+                    moreButton.addEventListener('click', () => this.showAllTags(wrapper, tags, moreButton));
+                }
+                
+                const adjustVisibility = () => this.adjustTagVisibility(wrapper, tags, moreButton);
+                adjustVisibility();
+                window.addEventListener('resize', adjustVisibility);
+                setTimeout(adjustVisibility, 50);
+                setTimeout(adjustVisibility, 100);
+            });
+        },
+    
+        showAllTags(wrapper, tags, moreButton) {
+            tags.forEach(tag => { tag.style.display = 'inline-flex';tag.style.position  = 'relative'; });
+            moreButton.style.display = 'none';
+            wrapper.style.flexWrap = 'wrap';
+        },
+    
+        adjustTagVisibility(wrapper, tags, moreButton) {
+            const wrapperWidth = wrapper.offsetWidth;
+            let currentWidth = 0;
+            let isOverflowing = false;
+    
+            tags.forEach(tag => {
+                tag.style.display = 'inline-flex';
+                tag.style.position  = 'relative';
+                currentWidth += tag.offsetWidth + 8;
+    
+                if (currentWidth + (moreButton?.offsetWidth || 0) > wrapperWidth) {
+                    tag.style.display = 'none';
+                    tag.style.position  = 'absolute';
+                    isOverflowing = true;
+                }
+            });
+    
+            if (moreButton) {
+                moreButton.style.display = isOverflowing ? 'inline-flex' : 'none';
+            }
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
         sr_gallery.init();
         sr_tabs.init();
         sr_areas.init();
         sr_base_map.init();
         sr_organization_map.init();
+        sr_tags.init();
     });
 
 }(jQuery, window, document));
