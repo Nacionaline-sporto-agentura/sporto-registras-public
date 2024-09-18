@@ -37,7 +37,7 @@
     padding: 0;
     margin-bottom:1rem;
 }
-
+.more-button,
 .sport-base__types li {
     display: inline-block;
     padding: 2px 12px;
@@ -291,18 +291,6 @@ a.sport-base__space__heading:hover h3.sport-base__space-title{
     align-items: center;
     width: 100%;
     overflow: hidden; 
-}
-.tags-wrapper .more-button {
-    display: none; 
-    align-items: center;
-    height: 24px;
-    padding: 0 8px;
-    background-color: white;
-    border: 1px solid #E6E6E6;
-    border-radius: 10px;
-    font-size: 14px;
-    color: #242424;
-    cursor: pointer;
 }
 .sport-organization__manager-map-wrapper,
 .sport-base__manager-map-wrapper{
