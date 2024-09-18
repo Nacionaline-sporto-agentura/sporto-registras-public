@@ -302,10 +302,22 @@ table.dataTable tbody td {
     color: #4B5565
 }
 
-table.dataTable tbody tr {
+/* table.dataTable tbody tr {
     cursor: pointer
-}
+} */
+.read-more img{
+    width:48px;
+    height:48px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-left:4px;
 
+}
+.read-more{
+    display:flex;
+    gap:16px;
+    align-items:center;
+}
 table.dataTable tbody tr.odd {
     background-color: #f9f9f9;
 }

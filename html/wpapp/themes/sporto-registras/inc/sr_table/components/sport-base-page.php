@@ -24,7 +24,7 @@ if (isset($args['data']['spaces'])) {
 $photos = '';
 $photos_count = 0;
 foreach ($args['data']['photos'] as $photo) {
-    if (empty($photo['public'])) {
+    if (isset($photo['public']) && $photo['public'] == true) {
         $photos .= '<a href="'.$photo['url'].'" data-elementor-lightbox-slideshow="photo-gallery" class="sport-base__photo" data-elementor-lightbox-title="' . $photo['description'] . '" style="background-image:url('.$photo['url'].');"></a>';
         $photos_count++;
     }

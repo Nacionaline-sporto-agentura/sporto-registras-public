@@ -31,11 +31,9 @@
                 center: sr_map_config.coordinates,
                 zoom: sr_map_config.zoom
             });
-
-            if (sr_map_config.add_layer === 'true') {
+            if (sr_map_config.add_layer == 'true') {
                 map.on('load', async() => {
 
-                    console.log(sr_map_config.pin)
                     const image = await map.loadImage(sr_map_config.pin.url);
 
                     map.addImage('ico', image.data, {
@@ -98,8 +96,6 @@
                             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                         }
 
-                        // Fetch additional data for the feature
-                        
                         fetch(`${sr_map_config.base_map_url}/?query[id]=${featureId}`)
                             .then(response => response.json())
                             .then(data => {
@@ -117,10 +113,10 @@
                                     }
 
                                     popupContent += `<h3>${featureData.name}</h3>`;
-                                    const municipality = JSON.parse(featureData.address.municipality);
-                                    const street = JSON.parse(featureData.address.street);
-                                    const city = JSON.parse(featureData.address.city);
-                                    const house = JSON.parse(featureData.address.house);
+                                    const municipality = featureData.address.municipality;
+                                    const street = featureData.address.street;
+                                    const city = featureData.address.city;
+                                    const house = featureData.address.house;
 
                                     popupContent += `<div class="address-wrapper">${street.name} ${house.plot_or_building_number}, ${city.name}, ${municipality.name}</div>`;
 
@@ -154,7 +150,7 @@
                     });
                     
                 });
-            } else {
+            }else {
                 const el = document.createElement('div');
                 el.className = 'marker';
                 el.style.backgroundImage = `url(${sr_map_config.pin.url})`;

@@ -81,7 +81,7 @@ class SR_Frontpage
             ]
         ));
 
-        return '<div class="sr-map__wrapper"><div id="sr-map" style="height:'.$atts['map_height'].'"></div></div>';
+        return '<div class="sr-map__wrapper"><div id="sr-map" style="height:'.$atts['map_height'].'" data-addlayer="true"></div></div>';
     }
 }
 new SR_Frontpage();

@@ -16,6 +16,10 @@
 
     var sr_table = {
         $table: null,
+        getRepresentativeImageUrl: function(photos) {
+            const representativePhoto = photos.find(photo => (photo.representative === true && photo.public === true));
+            return (representativePhoto ? representativePhoto.url : sr_table_vars.PLACEHOLDER).replace(/,/g, '&#44;');
+        },
         getSportTypes: function (publicSpaces) {
             let types = '';
             publicSpaces.forEach(function (public_space) {
@@ -38,8 +42,10 @@
                         orderable: true,
                         searchable: true,
                         render: function (data, type, row) {
+                            console.log(row);
                             const slug = row.name ? `/${row.name.slugifyTitle()}` : '';
-                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}">${row.name}</a>`;
+                            const photo = sr_table.getRepresentativeImageUrl(row.photos);
+                            return `<a class="read-more" href="${sr_table_vars.SPORT_BASE_URL}${row.id}${slug}"><img src="${photo}" alt="${row.name}">${row.name}</a>`;
                         }
                     },
                     {
@@ -101,7 +107,9 @@
                         searchable: true
                     }
                 ],
-                columnDefs: [],
+                columnDefs: [
+                    { width: '200px', targets: 0 } 
+                ],
                 initFilters: function() {
                     $('#filter_sportbase_name').on('keyup', function() {
                         sr_table.$tables['sportsbases'].applyFilters();

@@ -59,16 +59,24 @@ class SR_Table
             wp_enqueue_style('sr-page-styles', SR_THEME_URL . '/inc/sr_table/sr_page.css', [], $sr_page_css_ver, 'all');
             wp_enqueue_script('sr-page-js', SR_THEME_URL . '/inc/sr_table/sr_page.js', ['jquery'], $sr_page_js_ver, true);
 
+            $sport_base_page = get_page_by_path('sporto-bazes')->ID ?? $sport_base_page = 0;
+
             wp_localize_script(
                 'sr-page-js',
                 'objVars',
                 array(
+                    'base_map_url' => SPORT_BASES_MAP_URL,
                     'ajaxurl' => admin_url('admin-ajax.php'),
                     'map'=>[
                         'ico'=> SR_THEME_URL . '/assets/images/sr-pin-icon.png',
                         'ico_width'=> 40,
                         'ico_height'=> 46,
                         'zoom'=> 10,
+                    ],
+                    'placeholder'=> SR_THEME_URL . '/assets/images/placeholder.png',
+                    'sport_base_url' => get_permalink($sport_base_page),
+                    'i18n' => [
+                        'more' => __('Plačiau', 'sr'),
                     ]
                 )
             );
@@ -366,7 +374,8 @@ class SR_Table
                 'SPORT_BASE_URL' => get_permalink($sport_base_page),
                 'I18N' => [
                     'READ_MORE' => __('Peržiūrėti', 'sr'),
-                ]
+                ],
+                'PLACEHOLDER'=> SR_THEME_URL . '/assets/images/placeholder.png',
             )
         );
         $filter = '';
