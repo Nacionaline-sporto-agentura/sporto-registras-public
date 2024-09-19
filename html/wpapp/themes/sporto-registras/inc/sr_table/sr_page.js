@@ -43,11 +43,15 @@
         removeAddedStyles: function() {
             if (window.innerWidth >= 768) {
                 sr_gallery.slides.forEach(slide => {
-                    slide.style.transition = '';
-                    slide.style.transform = '';
+                    if (slide) { // Ensure slide is not undefined or null
+                        slide.style.transition = '';
+                        slide.style.transform = '';
+                    }
                 });
-                this.track.style.transition = '';
-                this.track.style.transform = '';
+                if (this.track) { // Ensure this.track is not null
+                    this.track.style.transition = '';
+                    this.track.style.transform = '';
+                }
             }
         },
         init: function () {
@@ -168,7 +172,7 @@
             document.addEventListener('click', sr_areas.closeAllDetails);
             document.querySelectorAll('.sport-base__space').forEach(function(space) {
                 space.addEventListener('click', function(event) {
-                    event.stopPropagation();
+                    return;
                 });
             });
         },
@@ -312,7 +316,29 @@
                             'text-color': '#000000'
                         },
                     });
-                    
+                    map.on('click', 'cluster', async (e) => {
+                        const features = map.queryRenderedFeatures(e.point, {
+                            layers: ['cluster']
+                        });
+                
+                        if (!features.length) return; // No features found
+                
+                        const clusterId = features[0].properties.cluster_id;
+                
+                        try {
+                            const source = map.getSource('registras');
+                            // get current zoom
+                            const zoom = map.getZoom();
+                            const zoomedIn = zoom + 1;
+                            
+                            map.easeTo({
+                                center: features[0].geometry.coordinates,
+                                zoom: zoomedIn
+                            });
+                        } catch (error) {
+                            console.error('Error zooming into cluster:', error);
+                        }
+                    });
                     map.on('click', 'point', (e) => {
                         const coordinates = e.features[0].geometry.coordinates.slice();
                         const featureId = e.features[0].properties.id;
@@ -375,6 +401,13 @@
                     map.on('mouseleave', 'point', () => {
                         map.getCanvas().style.cursor = '';
                     });
+
+                    map.on('mouseenter', 'cluster', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+                    map.on('mouseleave', 'cluster', () => {
+                        map.getCanvas().style.cursor = '';
+                    });
                     
                 });
             }
@@ -392,10 +425,8 @@
                 }
                 
                 const adjustVisibility = () => this.adjustTagVisibility(wrapper, tags, moreButton);
-                adjustVisibility();
                 window.addEventListener('resize', adjustVisibility);
-                setTimeout(adjustVisibility, 50);
-                setTimeout(adjustVisibility, 100);
+                adjustVisibility();
             });
         },
     
@@ -406,6 +437,7 @@
         },
     
         adjustTagVisibility(wrapper, tags, moreButton) {
+            console.log('adjusting visibility');
             const wrapperWidth = wrapper.offsetWidth;
             let currentWidth = 0;
             let isOverflowing = false;

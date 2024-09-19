@@ -86,7 +86,29 @@
                             'text-color': '#000000'
                         },
                     });
-                    
+                    map.on('click', 'cluster', async (e) => {
+                        const features = map.queryRenderedFeatures(e.point, {
+                            layers: ['cluster']
+                        });
+                
+                        if (!features.length) return; // No features found
+                
+                        const clusterId = features[0].properties.cluster_id;
+                
+                        try {
+                            const source = map.getSource('registras');
+                            // get current zoom
+                            const zoom = map.getZoom();
+                            const zoomedIn = zoom + 1;
+                            
+                            map.easeTo({
+                                center: features[0].geometry.coordinates,
+                                zoom: zoomedIn
+                            });
+                        } catch (error) {
+                            console.error('Error zooming into cluster:', error);
+                        }
+                    });
                     map.on('click', 'point', (e) => {
                         const coordinates = e.features[0].geometry.coordinates.slice();
                         const featureId = e.features[0].properties.id;
@@ -149,6 +171,12 @@
                         map.getCanvas().style.cursor = '';
                     });
                     
+                    map.on('mouseenter', 'cluster', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+                    map.on('mouseleave', 'cluster', () => {
+                        map.getCanvas().style.cursor = '';
+                    });
                 });
             }else {
                 const el = document.createElement('div');
