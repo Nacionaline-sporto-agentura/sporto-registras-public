@@ -202,9 +202,9 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
             <?php } ?>
             <?php } ?>
         </div>
-        <?php if (!empty($args['data']['tenants'])) {?>
+        <?php  if (!empty($args['data']['tenants'])) {?>
         <div class="sport-base__tab-content" data-tab="organizations">
-            <h2><?php _e('Organizacijos', 'sr');?></h2>
+            <h2><?php _e('Organizacijos veikiančios sporto bazėje', 'sr');?></h2>
             <?php foreach ($args['data']['tenants'] as $tenant) { ?>
                 <div class="sport-base__space">
                     <h3 class="sport-base__space-title"><?php echo $tenant['name'];?></h3>
