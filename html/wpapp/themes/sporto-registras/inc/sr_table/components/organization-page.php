@@ -44,15 +44,19 @@ if (!empty($args['data']['sportsBases'])) {
         }
         $sport_base_id = $sportBase['id'] ?? '';
         $sport_base_name = $sportBase['name'] ?? '';
+        $sport_base_photo = $sportBase['photo']['url'] ?? '';
+     
         $sport_bases[] = [
             'id' => $sport_base_id,
             'name' => $sport_base_name,
             'address' => $address,
             'sport_types' => $sportTypes,
+            'photo' => $sport_base_photo,
         ];
     }
 }
 $organizationSportTypes = array_keys($organizationSportTypes);
+
 ?>
 
 <div class="sport-base__address"><span class="sport-base__address__item"><svg class="sport-base__address__icon" xmlns="
@@ -67,24 +71,31 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
 <div class="sport-base__data">
     <?php if (!empty($sport_bases)) {?>
     <div class="sport-base__wrapper">
-        <?php foreach ($sport_bases as $sport_base) {  ?>
+        <?php foreach ($sport_bases as $sport_base) { $featured_photo = $args['data']['featuredPhoto'] ?? '';  ?>
         <div class="sport-base__space">
-            <a class="sport-base__space__heading" href="<?php echo get_the_permalink($sportbases_page).$sport_base['id'].'/'.sanitize_title($sport_base['name']); ?>">
-                <h3 class="sport-base__space-title"><?php echo $sport_base['name'];?></h3>
-            </a>
-            <div class="sport-base__address"><span class="sport-base__address__item"><svg class="sport-base__address__icon" xmlns="
-http://www.w3.org/2000/svg"
-width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-        <?php echo $sport_base['address'];?></span></span></div>
-            <div class="sport-base__space__meta">
-                <?php if (!empty($sport_base['sport_types'])) { ?>
-                <ul class="sport-base__types tags-wrapper">
-                    <?php foreach ($sport_base['sport_types'] as $sportType) { ?>
-                    <li class="tag"><?php echo $sportType;?></li>
-                    <?php } ?>
-                    <li class="more-button"><?php _e('Daugiau...','sr');?></li>
-                </ul>
-                <?php } ?>
+            <div class="sport-base__space--wrapper">
+                <div class="sport-base__space--photo">
+                    <img src="<?php echo $sport_base['photo'];?>" alt="<?php echo esc_attr($sport_base['name']);?>"/>
+                </div>
+                <div class="sport-base__space--info">
+                    <a class="sport-base__space__heading" href="<?php echo get_the_permalink($sportbases_page).$sport_base['id'].'/'.sanitize_title($sport_base['name']); ?>">
+                        <h3 class="sport-base__space-title"><?php echo $sport_base['name'];?></h3>
+                    </a>
+                    <div class="sport-base__address"><span class="sport-base__address__item"><svg class="sport-base__address__icon" xmlns="
+        http://www.w3.org/2000/svg"
+        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                <?php echo $sport_base['address'];?></span></span></div>
+                    <div class="sport-base__space__meta">
+                        <?php if (!empty($sport_base['sport_types'])) { ?>
+                        <ul class="sport-base__types tags-wrapper">
+                            <?php foreach ($sport_base['sport_types'] as $sportType) { ?>
+                            <li class="tag"><?php echo $sportType;?></li>
+                            <?php } ?>
+                            <li class="more-button"><?php _e('Daugiau...','sr');?></li>
+                        </ul>
+                        <?php } ?>
+                    </div>
+                </div>
             </div>
         </div>
         <?php } ?>

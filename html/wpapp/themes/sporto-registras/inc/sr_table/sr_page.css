@@ -35,9 +35,16 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    margin-bottom:1rem;
 }
-
+.sport-base__address + .sport-base__types{
+margin-bottom: 32px;
+}
+.sport-base__space--info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.more-button,
 .sport-base__types li {
     display: inline-block;
     padding: 2px 12px;
@@ -49,7 +56,9 @@
     color:#344054;
     font-size:14px;
 }
-
+.more-button{
+    cursor:pointer;
+}
 .sport-base__photos {
     display: grid;
     gap: 16px;
@@ -233,6 +242,7 @@
     color:#fff;
     font-size:14px;
 }
+.sport-base__space--f,
 .sport-base__space{
     display:block;
 }
@@ -262,6 +272,7 @@ a.sport-base__space__heading:hover h3.sport-base__space-title{
     background-color: #f8d7da;
     color:#58151c;
 }
+.sport-base__space--f,
 .sport-base__space{
     margin-bottom: .5rem;
     border-radius:16px;
@@ -283,6 +294,27 @@ a.sport-base__space__heading:hover h3.sport-base__space-title{
     align-items: center;
     justify-content: center;
 }
+.sport-base__space--wrapper {
+    display: grid;
+    grid-template-columns: 200px auto;
+    gap: 32px;
+}
+.sport-base__space--photo img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4/2;
+    border-radius: 12px;
+    object-fit: cover;
+}
+.sport-base__photos a,
+.sport-base__space--photo a{
+    cursor: zoom-in;
+}
+@media(max-width: 768px) {
+    .sport-base__space--wrapper {
+        grid-template-columns: 1fr;
+    }
+}
 .tags-wrapper {
     display: flex;
     flex-wrap: nowrap; 
@@ -292,17 +324,8 @@ a.sport-base__space__heading:hover h3.sport-base__space-title{
     width: 100%;
     overflow: hidden; 
 }
-.tags-wrapper .more-button {
-    display: none; 
-    align-items: center;
-    height: 24px;
-    padding: 0 8px;
-    background-color: white;
-    border: 1px solid #E6E6E6;
-    border-radius: 10px;
-    font-size: 14px;
-    color: #242424;
-    cursor: pointer;
+.tag{
+    position:absolute;
 }
 .sport-organization__manager-map-wrapper,
 .sport-base__manager-map-wrapper{

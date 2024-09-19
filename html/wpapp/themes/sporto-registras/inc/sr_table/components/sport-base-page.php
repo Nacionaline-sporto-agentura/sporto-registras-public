@@ -21,11 +21,31 @@ if (isset($args['data']['spaces'])) {
         }
     }
 }
+if(!function_exists('build_lightbox_gallery')){
+    function build_lightbox_gallery($id, $photos){
+        $gallery = '';
+        if(isset($photos) && !is_array($photos)){
+            return $gallery;
+        }
+        foreach ($photos as $photo) {
+            if ($photo['representative'] == 1 && $photo['public'] == 1) {
+                $gallery = '<a href="'.$photo['url'].'" data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="photo-gallery-'.$id.'" class="sport-base__photo" data-elementor-lightbox-title="' . $photo['description'] . '"><img src="'.$photo['url'].'" alt="'.$photo['description'].'"></a>';
+                break;
+            }
+        }
+        foreach ($photos as $photo) {
+            if (isset($photo['public']) && $photo['public'] == 1) {
+                $gallery .= '<a href="'.$photo['url'].'" data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="photo-gallery-'.$id.'" class="sport-base__photo" data-elementor-lightbox-title="' . $photo['description'] . '" style="background-image:url('.$photo['url'].');"></a>';
+            }
+        }
+        return $gallery;
+    }
+}
 $photos = '';
 $photos_count = 0;
 foreach ($args['data']['photos'] as $photo) {
-    if (empty($photo['public']) && $photo['public'] == true) {
-        $photos .= '<a href="'.$photo['url'].'" data-elementor-lightbox-slideshow="photo-gallery" class="sport-base__photo" data-elementor-lightbox-title="' . $photo['description'] . '" style="background-image:url('.$photo['url'].');"></a>';
+    if (isset($photo['public']) && $photo['public'] == true) {
+        $photos .= '<a href="'.$photo['url'].'" data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="photo-gallery" class="sport-base__photo" data-elementor-lightbox-title="' . $photo['description'] . '" style="background-image:url('.$photo['url'].');"></a>';
         $photos_count++;
     }
 }
@@ -53,10 +73,11 @@ if (!function_exists('fix_url')) {
 }
 ?>
 
+
 <div class="sport-base__address"><svg class="sport-base__address__icon" xmlns="
 http://www.w3.org/2000/svg"
 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg> <?php echo $address;?></div>
-<ul class="sport-base__types tags-wrapper"><?php echo !empty($sportTypes) ? '<li class="tag">'.implode('</li><li class="tag">', $sportTypes).'</li>'.'<li class="more-button">'.__('Daugiau...','sr').'</li>' : '';?></ul>
+<ul class="sport-base__types tags-wrapper"><?php echo !empty($sportTypes) ? '<li class="tag">'.implode('</li><li class="tag">', $sportTypes).'</li>'.'<li class="more-button">'.__('Daugiau...', 'sr').'</li>' : '';?></ul>
 <?php if ($photos_count > 0) { ?>
 <div class="sport-base__photos__wrapper">
     <div class="sport-base__photos sport-base__photos__count-<?php echo $photos_count > 5 ? 5 : $photos_count;?>"><?php echo !empty($photos) ? $photos : '';?></div>
@@ -131,36 +152,45 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
             <?php if (!empty($args['data']['spaces'])) { ?>
             <?php foreach ($args['data']['spaces'] as $spaces) { ?>
                 <div class="sport-base__space">
-                    <div class="sport-base__space__heading">
-                        <h3 class="sport-base__space-title"><?php echo $spaces['name'];?></h3>
-                        <div class="sport-base__space__technicalCondition" style="color:<?php echo $spaces['technicalCondition']['color'];?>;background-color:<?php echo $spaces['technicalCondition']['color'];?>0f"><?php echo $spaces['technicalCondition']['name'];?></div>
-                    </div>
-                    <div class="sport-base__space__type"><?php echo $spaces['type']['name'];?></div>
-                    <div class="sport-base__space__meta">
-                        <?php
-                        $spaces['sportTypes'] = array_filter($spaces['sportTypes']);
-                if (!empty($spaces['sportTypes'])) {
-                    ?>
-                        <ul class="sport-base__types tags-wrapper">
-                            <?php foreach ($spaces['sportTypes'] as $sportType) { ?>
-                                <li class="tag"><?php echo $sportType['name'];?></li>
-                            <?php } ?>
-                            <li class="more-button"><?php _e('Daugiau...','sr');?></li>
-                        </ul>
-                        <?php } ?>
-                        
-                        <div class="sport-base__space__more"><span class="expand-text"><?php _e('Detaliau', 'sr');?></span><span class="collapse-text"><?php _e('Suskleisti', 'sr');?></span> <span class="btn-more sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 7H17V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7 17L17 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            </span>
+                    <div class="sport-base__space--wrapper">
+                        <div class="sport-base__space--photo">
+                            <?php echo build_lightbox_gallery($spaces['id'], $spaces['photos']);?>
+                        </div>
+                        <div class="sport-base__space--info">
+                            <div>
+                                <div class="sport-base__space__heading">
+                                    <h3 class="sport-base__space-title"><?php echo $spaces['name'];?></h3>
+                                    <div class="sport-base__space__technicalCondition" style="color:<?php echo $spaces['technicalCondition']['color'];?>;background-color:<?php echo $spaces['technicalCondition']['color'];?>0f"><?php echo $spaces['technicalCondition']['name'];?></div>
+                                </div>
+                                <div class="sport-base__space__type"><?php echo $spaces['type']['name'];?></div>
+                            </div>
+                            <div class="sport-base__space__meta">
+                                <?php
+                                    $spaces['sportTypes'] = array_filter($spaces['sportTypes']);
+                                if (!empty($spaces['sportTypes'])) {
+                                ?>
+                                <ul class="sport-base__types tags-wrapper">
+                                    <?php foreach ($spaces['sportTypes'] as $sportType) { ?>
+                                        <li class="tag"><?php echo $sportType['name'];?></li>
+                                    <?php } ?>
+                                    <li class="more-button"><?php _e('Daugiau...', 'sr');?></li>
+                                </ul>
+                                <?php } ?>
+                                
+                                <div class="sport-base__space__more"><span class="expand-text"><?php _e('Detaliau', 'sr');?></span><span class="collapse-text"><?php _e('Suskleisti', 'sr');?></span> <span class="btn-more sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 7H17V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7 17L17 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="sport-base__space_additionalValues_wrapper">
                         <?php if (!empty($spaces['additionalValues'])) { ?>
                             <ul class="sport-base__space__additionalValues">
                                 <?php foreach ($spaces['additionalValues'] as $additionalValue) {
-                                    if ($additionalValue['value'] == 'true' || $additionalValue['value'] == 'false') {    
+                                    if ($additionalValue['value'] == 'true' || $additionalValue['value'] == 'false') {
                                         $additionalValue['value'] = $additionalValue == 'true' ? __('Taip', 'sr') : __('Ne', 'sr');
                                     }
                                     ?>
@@ -172,9 +202,9 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
             <?php } ?>
             <?php } ?>
         </div>
-        <?php if (!empty($args['data']['tenants'])) {?>
+        <?php  if (!empty($args['data']['tenants'])) {?>
         <div class="sport-base__tab-content" data-tab="organizations">
-            <h2><?php _e('Organizacijos', 'sr');?></h2>
+            <h2><?php _e('Organizacijos veikiančios sporto bazėje', 'sr');?></h2>
             <?php foreach ($args['data']['tenants'] as $tenant) { ?>
                 <div class="sport-base__space">
                     <h3 class="sport-base__space-title"><?php echo $tenant['name'];?></h3>
@@ -211,20 +241,20 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
         <?php } ?>
 
         <?php if (!empty($args['data']['geom'])) {
-                            $reader = new EWKBReader();
-                            $point = $reader->read(hex2bin($args['data']['geom']));
-                            $y = $point->y();
-                            $x = $point->x();
+            $reader = new EWKBReader();
+            $point = $reader->read(hex2bin($args['data']['geom']));
+            $y = $point->y();
+            $x = $point->x();
 
-                            $proj4 = new Proj4php();
-                            $projLKS = new Proj('EPSG:3346', $proj4);
-                            $projWGS = new Proj('EPSG:4326', $proj4);
-                            $pointLKS = new ProjPoint($x, $y, $projLKS);
-                            $pointWGS = $proj4->transform($projWGS, $pointLKS);
+            $proj4 = new Proj4php();
+            $projLKS = new Proj('EPSG:3346', $proj4);
+            $projWGS = new Proj('EPSG:4326', $proj4);
+            $pointLKS = new ProjPoint($x, $y, $projLKS);
+            $pointWGS = $proj4->transform($projWGS, $pointLKS);
 
-                            $latitude = $pointWGS->y;
-                            $longitude = $pointWGS->x;
-                            ?>
+            $latitude = $pointWGS->y;
+            $longitude = $pointWGS->x;
+            ?>
         <div class="sport-base__manager-map-wrapper" data-lat="<?php echo $latitude;?>" data-lng="<?php echo $longitude;?>" ><div id="sport-base__manager-map" class="sport-base__manager-map"></div></div>
         <?php } ?>
     
