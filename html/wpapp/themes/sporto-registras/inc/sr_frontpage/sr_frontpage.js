@@ -25,12 +25,27 @@
         init: function () {
             const mapContainer = document.getElementById('sr-map');
             if (!mapContainer || !maplibregl) return;
+            
             const map = new maplibregl.Map({
                 container: 'sr-map',
-                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: sr_map_config.base_map_style,
                 center: sr_map_config.coordinates,
-                zoom: sr_map_config.zoom
+                zoom: sr_map_config.zoom,
+                attributionControl: false
             });
+
+            map.addControl(new maplibregl.AttributionControl({
+                compact: true
+            }));
+
+            map.on('load', function() {
+                const attributionDetails = document.querySelector('.maplibregl-compact');
+                if (attributionDetails) {
+                    attributionDetails.removeAttribute('open'); 
+                    attributionDetails.classList.remove('maplibregl-compact-show'); 
+                }
+            });
+            
             if (sr_map_config.add_layer == 'true') {
                 map.on('load', async() => {
 
@@ -177,6 +192,8 @@
                     map.on('mouseleave', 'cluster', () => {
                         map.getCanvas().style.cursor = '';
                     });
+
+                    
                 });
             }else {
                 const el = document.createElement('div');

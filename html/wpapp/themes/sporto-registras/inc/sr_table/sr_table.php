@@ -66,14 +66,15 @@ class SR_Table
                 'objVars',
                 array(
                     'base_map_url' => SPORT_BASES_MAP_URL,
+                    'base_map_style' => SR_THEME_URL.'/assets/js/basemap-style.json',
                     'ajaxurl' => admin_url('admin-ajax.php'),
-                    'map'=>[
-                        'ico'=> SR_THEME_URL . '/assets/images/sr-pin-icon.png',
-                        'ico_width'=> 40,
-                        'ico_height'=> 46,
-                        'zoom'=> 10,
+                    'map' => [
+                        'ico' => SR_THEME_URL . '/assets/images/sr-pin-icon.png',
+                        'ico_width' => 40,
+                        'ico_height' => 46,
+                        'zoom' => 10,
                     ],
-                    'placeholder'=> SR_THEME_URL . '/assets/images/placeholder.png',
+                    'placeholder' => SR_THEME_URL . '/assets/images/placeholder.png',
                     'sport_base_url' => get_permalink($sport_base_page),
                     'i18n' => [
                         'more' => __('Plačiau', 'sr'),
@@ -375,7 +376,7 @@ class SR_Table
                 'I18N' => [
                     'READ_MORE' => __('Peržiūrėti', 'sr'),
                 ],
-                'PLACEHOLDER'=> SR_THEME_URL . '/assets/images/placeholder.png',
+                'PLACEHOLDER' => SR_THEME_URL . '/assets/images/placeholder.png',
             )
         );
         $filter = '';

@@ -68,6 +68,7 @@ class SR_Frontpage
 
         wp_localize_script('sr-frontpage-js', 'sr_map_config', array(
             'base_map_url' => SPORT_BASES_MAP_URL,
+            'base_map_style' => SR_THEME_URL.'/assets/js/basemap-style.json',
             'coordinates' => explode(',', $atts['coordinates']),
             'zoom' => (int)$atts['zoom'],
             'add_layer' => $atts['add_layer'] === 'true' ? 'true' : 'false',

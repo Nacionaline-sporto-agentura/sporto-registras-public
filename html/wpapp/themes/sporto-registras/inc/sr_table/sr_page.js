@@ -219,7 +219,7 @@
 
             const map = new maplibregl.Map({
                 container: 'sport-base__manager-map',
-                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: objVars.base_map_style,
                 center: [lng, lat],
                 zoom: objVars.map.zoom,
                 attributionControl: false
@@ -228,6 +228,14 @@
             map.addControl(new maplibregl.AttributionControl({
                 compact: true
             }));
+
+            map.on('load', function() {
+                const attributionDetails = document.querySelector('.maplibregl-compact');
+                if (attributionDetails) {
+                    attributionDetails.removeAttribute('open'); 
+                    attributionDetails.classList.remove('maplibregl-compact-show'); 
+                }
+            });
             const markerDiv = document.createElement('div');
             markerDiv.className = 'custom-marker';
             markerDiv.style.backgroundImage = `url(${objVars.map.ico})`;
@@ -252,14 +260,24 @@
 
             const map = new maplibregl.Map({
                 container: 'sport-organization__manager-map',
-                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: objVars.base_map_style, //'https://basemap.startupgov.lt/vector/styles/bright/style.json',
                 center: [25.279652, 54.687157],
                 zoom: objVars.map.zoom,
                 attributionControl: false
             });
+          
             map.addControl(new maplibregl.AttributionControl({
                 compact: true
             }));
+
+            map.on('load', function() {
+                const attributionDetails = document.querySelector('.maplibregl-compact');
+                if (attributionDetails) {
+                    attributionDetails.removeAttribute('open'); 
+                    attributionDetails.classList.remove('maplibregl-compact-show'); 
+                }
+            });
+
             if($('#sport-organization__manager-map').data('sportbasesids') && $('#sport-organization__manager-map').data('sportbasesids').length > 0) { 
                 map.on('load', async() => {
                     const image = await map.loadImage(objVars.map.ico);
