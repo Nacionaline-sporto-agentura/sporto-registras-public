@@ -28,14 +28,15 @@
             
             const map = new maplibregl.Map({
                 container: 'sr-map',
-                style: sr_map_config.base_map_style,
+                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
                 center: sr_map_config.coordinates,
                 zoom: sr_map_config.zoom,
                 attributionControl: false
             });
 
             map.addControl(new maplibregl.AttributionControl({
-                compact: true
+                compact: true,
+                customAttribution: '© <a href="https://registras.ltusportas.lt/">Sporto registras</a>'
             }));
 
             map.on('load', function() {

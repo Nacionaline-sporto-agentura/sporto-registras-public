@@ -260,14 +260,15 @@
 
             const map = new maplibregl.Map({
                 container: 'sport-organization__manager-map',
-                style: objVars.base_map_style, //'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
                 center: [25.279652, 54.687157],
                 zoom: objVars.map.zoom,
                 attributionControl: false
             });
           
             map.addControl(new maplibregl.AttributionControl({
-                compact: true
+                compact: true,
+                customAttribution: '© <a href="https://registras.ltusportas.lt/">Sporto registras</a>'
             }));
 
             map.on('load', function() {

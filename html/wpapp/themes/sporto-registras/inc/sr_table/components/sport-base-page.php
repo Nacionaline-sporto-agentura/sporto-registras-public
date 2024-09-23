@@ -21,10 +21,11 @@ if (isset($args['data']['spaces'])) {
         }
     }
 }
-if(!function_exists('build_lightbox_gallery')){
-    function build_lightbox_gallery($id, $photos){
+if (!function_exists('build_lightbox_gallery')) {
+    function build_lightbox_gallery($id, $photos)
+    {
         $gallery = '';
-        if(isset($photos) && !is_array($photos)){
+        if (isset($photos) && !is_array($photos)) {
             return $gallery;
         }
         foreach ($photos as $photo) {
@@ -165,10 +166,11 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
                                 <div class="sport-base__space__type"><?php echo $spaces['type']['name'];?></div>
                             </div>
                             <div class="sport-base__space__meta">
+                                <div>
                                 <?php
                                     $spaces['sportTypes'] = array_filter($spaces['sportTypes']);
-                                if (!empty($spaces['sportTypes'])) {
-                                ?>
+                if (!empty($spaces['sportTypes'])) {
+                    ?>
                                 <ul class="sport-base__types tags-wrapper">
                                     <?php foreach ($spaces['sportTypes'] as $sportType) { ?>
                                         <li class="tag"><?php echo $sportType['name'];?></li>
@@ -176,7 +178,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
                                     <li class="more-button"><?php _e('Daugiau...', 'sr');?></li>
                                 </ul>
                                 <?php } ?>
-                                
+                                </div>
                                 <div class="sport-base__space__more"><span class="expand-text"><?php _e('Detaliau', 'sr');?></span><span class="collapse-text"><?php _e('Suskleisti', 'sr');?></span> <span class="btn-more sport-base__ico sport-base__ico-constructionDate"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7 7H17V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     <path d="M7 17L17 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -219,7 +221,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
         $tenant = $args['data']['tenant']; ?>
     <div class="sport-base__manger">
 
-        <div class="sport-base__manger-title">Kontaktai</div>
+        <div class="sport-base__manger-title"><?php _e('Kontaktai', 'sr');?></div>
         <div class="sport-base__manger-contacts"> 
         <?php if (!empty($args['data']['email'])) {?>
             <div class="sport-base__manger-email"><svg class="sport-base__ico sport-base__ico-envelope" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
