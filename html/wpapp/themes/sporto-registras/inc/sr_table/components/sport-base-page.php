@@ -118,7 +118,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
 <path d="M2 3H22" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M21 3V14C21 14.5304 20.7893 15.0391 20.4142 15.4142C20.0391 15.7893 19.5304 16 19 16H5C4.46957 16 3.96086 15.7893 3.58579 15.4142C3.21071 15.0391 3 14.5304 3 14V3" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M7 21L12 16L17 21" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg> <span class="sport-base__label"><?php echo sprintf(__('Metodinės klasės su %d %s', 'sr'), $args['data']['methodicalClasses'], translate_places($args['data']['methodicalClasses']));?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Metodinių klasių: %d %s', 'sr'), $args['data']['methodicalClasses'], __('vnt.', 'sr'));?></span></li>
                 <?php } ?>
                 <?php if (!empty($args['data']['saunas'])) { ?>
                     <li><svg class="sport-base__ico sport-base__ico-saunas" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -136,7 +136,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
 <rect width="24" height="24" fill="white"/>
 </clipPath>
 </defs>
-</svg> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpa su %d %s', 'sr'), $args['data']['saunas'], translate_places($args['data']['saunas']));?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpų %d %s', 'sr'), $args['data']['saunas'], __('vnt.', 'sr'));?></span></li>
                 <?php } ?>
                 <?php if (!empty($args['data']['constructionDate'])) { ?>
                     <li><svg class="sport-base__ico sport-base__ico-constructionDate" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
