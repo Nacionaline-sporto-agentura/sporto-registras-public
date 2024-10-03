@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dea2fa66fa9c4a408dd1cc051308be8a",
+    "content-hash": "eaee6266c5fe9aed0e69153741e5e23b",
     "packages": [
         {
             "name": "brick/geo",
@@ -2639,6 +2639,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/amazon-s3-and-cloudfront/"
+        },
+        {
+            "name": "wpackagist-plugin/cookiebot",
+            "version": "4.3.9.1",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/cookiebot/",
+                "reference": "tags/4.3.9.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/cookiebot.4.3.9.1.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/cookiebot/"
         },
         {
             "name": "wpackagist-plugin/elementor",
