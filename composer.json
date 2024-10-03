@@ -53,6 +53,7 @@
     "wpackagist-plugin/query-monitor": "*",
     "wpackagist-plugin/make-column-clickable-elementor": "*",
     "wpackagist-plugin/enable-media-replace": "*",
+    "wpackagist-plugin/cookiebot": "*",
     "wpackagist-plugin/stop-user-enumeration": "*",
     "stayallive/wp-sentry": "^6.26",
     "proj4php/proj4php": "^2.0",

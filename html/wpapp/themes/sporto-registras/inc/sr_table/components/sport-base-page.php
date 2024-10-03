@@ -189,11 +189,12 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
                         </div>
                     </div>
                     <div class="sport-base__space_additionalValues_wrapper">
-                        <?php if (!empty($spaces['additionalValues'])) { ?>
+                        <?php
+                if (!empty($spaces['additionalValues'])) { ?>
                             <ul class="sport-base__space__additionalValues">
                                 <?php foreach ($spaces['additionalValues'] as $additionalValue) {
                                     if ($additionalValue['value'] == 'true' || $additionalValue['value'] == 'false') {
-                                        $additionalValue['value'] = $additionalValue == 'true' ? __('Taip', 'sr') : __('Ne', 'sr');
+                                        $additionalValue['value'] = $additionalValue['value'] == 'true' ? __('Taip', 'sr') : __('Ne', 'sr');
                                     }
                                     ?>
                                     <li><span class="sport-base__space__additional-label"><?php echo $additionalValue['name'];?></span><span class="sport-base__space__additional-value"><?php echo $additionalValue['value'];?></span></li>
