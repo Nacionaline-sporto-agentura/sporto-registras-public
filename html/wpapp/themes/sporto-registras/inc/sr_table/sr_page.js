@@ -340,11 +340,11 @@
                         const features = map.queryRenderedFeatures(e.point, {
                             layers: ['cluster']
                         });
-                
                         if (!features.length) return; // No features found
                 
                         const clusterId = features[0].properties.cluster_id;
-                
+                        
+                        
                         try {
                             const source = map.getSource('registras');
                             // get current zoom

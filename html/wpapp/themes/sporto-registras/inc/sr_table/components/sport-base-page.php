@@ -12,12 +12,10 @@ if (empty($args['data'])) {
 $address = SR_Table::format_address($args['data']['address']);
 
 $sportTypes = [];
-if (isset($args['data']['spaces'])) {
-    foreach ($args['data']['spaces'] as $spaces) {
-        foreach ($spaces['sportTypes'] as $sportType) {
-            if (!empty($sportType['name'])) {
-                $sportTypes[] = $sportType['name'];
-            }
+if (isset($args['data']['sportTypes'])) {
+    foreach ($args['data']['sportTypes'] as $sportType) {
+        if (!empty($sportType['name'])) {
+            $sportTypes[] = $sportType['name'];
         }
     }
 }
@@ -57,12 +55,13 @@ if (!function_exists('translate_places')) {
         if ($number == 1) {
             return _n('vieta', 'vietos', $number, 'sr');
         } elseif ($number > 1 && $number < 10) {
-            return _n('vietos', 'vietos', $number, 'sr');
+            return _n('vietos', 'vietų', $number, 'sr');
         } else {
-            return _n('vietų', 'vietos', $number, 'sr');
+            return _n('vietos', 'vietų', $number, 'sr');
         }
     }
 }
+
 if (!function_exists('fix_url')) {
     function fix_url($url)
     {
@@ -111,14 +110,14 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
 <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 17V7H13C13.7956 7 14.5587 7.31607 15.1213 7.87868C15.6839 8.44129 16 9.20435 16 10C16 10.7956 15.6839 11.5587 15.1213 12.1213C14.5587 12.6839 13.7956 13 13 13H9" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
- <span class="sport-base__label"><?php echo sprintf(__('Automobilių stovėjimo aikštelė su %d %s', 'sr'), $args['data']['parkingPlaces'], translate_places($args['data']['parkingPlaces']));?></span></li>
+ <span class="sport-base__label"><?php echo sprintf(__('Automobilių stovėjimo aikštelė (%d %s)', 'sr'), $args['data']['parkingPlaces'], translate_places($args['data']['parkingPlaces']));?></span></li>
                 <?php } ?>
                 <?php if (!empty($args['data']['methodicalClasses'])) { ?>
                     <li><svg class="sport-base__ico sport-base__ico-methodicalClasses" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M2 3H22" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M21 3V14C21 14.5304 20.7893 15.0391 20.4142 15.4142C20.0391 15.7893 19.5304 16 19 16H5C4.46957 16 3.96086 15.7893 3.58579 15.4142C3.21071 15.0391 3 14.5304 3 14V3" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M7 21L12 16L17 21" stroke="#003D2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg> <span class="sport-base__label"><?php echo sprintf(__('Metodinių klasių: %d %s', 'sr'), $args['data']['methodicalClasses'], __('vnt.', 'sr'));?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Metodinių klasių (%d %s)', 'sr'), $args['data']['methodicalClasses'], __('vnt.', 'sr'));?></span></li>
                 <?php } ?>
                 <?php if (!empty($args['data']['saunas'])) { ?>
                     <li><svg class="sport-base__ico sport-base__ico-saunas" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -136,7 +135,7 @@ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#003D2B" stroke-w
 <rect width="24" height="24" fill="white"/>
 </clipPath>
 </defs>
-</svg> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpų %d %s', 'sr'), $args['data']['saunas'], __('vnt.', 'sr'));?></span></li>
+</svg> <span class="sport-base__label"><?php echo sprintf(__('Pirties patalpų (%d %s)', 'sr'), $args['data']['saunas'], __('vnt.', 'sr'));?></span></li>
                 <?php } ?>
                 <?php if (!empty($args['data']['constructionDate'])) { ?>
                     <li><svg class="sport-base__ico sport-base__ico-constructionDate" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
