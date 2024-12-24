@@ -28,7 +28,7 @@
             
             const map = new maplibregl.Map({
                 container: 'sr-map',
-                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: 'https://basemap.biip.lt/styles/bright/style.json',
                 center: sr_map_config.coordinates,
                 zoom: sr_map_config.zoom,
                 attributionControl: false

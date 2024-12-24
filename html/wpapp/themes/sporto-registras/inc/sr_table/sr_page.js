@@ -219,7 +219,7 @@
 
             const map = new maplibregl.Map({
                 container: 'sport-base__manager-map',
-                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: 'https://basemap.biip.lt/styles/bright/style.json',
                 center: [lng, lat],
                 zoom: objVars.map.zoom,
                 attributionControl: false
@@ -261,7 +261,7 @@
 
             const map = new maplibregl.Map({
                 container: 'sport-organization__manager-map',
-                style: 'https://basemap.startupgov.lt/vector/styles/bright/style.json',
+                style: 'https://basemap.biip.lt/styles/bright/style.json',
                 center: [25.279652, 54.687157],
                 zoom: objVars.map.zoom,
                 attributionControl: false
